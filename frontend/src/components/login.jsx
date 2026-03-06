@@ -5,6 +5,11 @@ const login = () => {
   return (
     <div>
         <Background/>
+
+
+        <div className='text-white'>
+          <p>SignUp</p>
+        </div>
       
     </div>
   )
