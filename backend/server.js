@@ -1,4 +1,4 @@
-import React from 'react'
+
 import connectDB from './src/database/connectDB'
 import app from './src/app.js'
 import dotenv from 'dotenv'
