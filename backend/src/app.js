@@ -1,7 +1,7 @@
 
 import express from 'express';
 import cors from 'cors';
-import pathing from './routes/pathing.router';
+import pathing from './routes/pathing.router.js';
 
 const app = express();
 app.use(cors());
