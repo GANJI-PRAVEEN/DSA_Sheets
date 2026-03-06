@@ -1,4 +1,4 @@
-import React from 'react'
+
 import mongoose from 'mongoose'
 const connectDB = async() => {
     try {
