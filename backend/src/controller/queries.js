@@ -1,5 +1,19 @@
 import usersModel from "../models/users.model";
 
+export const welcome = async(req,res) => {
+    try {
+        return res.status(200).json({
+            success:true,
+            message:"Welcome to DSA Sheets API"
+        });
+    } catch (error) {
+        return res.status(400).json({
+            success:false,
+            message:"Error",
+            error
+        });
+    }
+}
 
 export const createUser = async(req,res) => {
     try {
@@ -16,7 +30,7 @@ export const createUser = async(req,res) => {
             Email:email,
             Password:password
         });
-        return res.statsu(200).json({
+        return res.status(200).json({
             success:true,
             message:"Successfully created the user"
         })
