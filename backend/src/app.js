@@ -1,4 +1,4 @@
-import React from 'react'
+
 import express from 'express';
 import cors from 'cors';
 import pathing from './routes/pathing.router';
