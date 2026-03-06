@@ -6,7 +6,6 @@ import Background from './Background'
 function App() {
   return (
     <>
-    <Background/>
     </>
   )
 
