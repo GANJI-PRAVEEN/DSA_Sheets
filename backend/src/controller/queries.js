@@ -1,4 +1,4 @@
-import usersModel from "../models/users.model";
+import usersModel from "../models/users.model.js";
 
 export const welcome = async(req,res) => {
     try {

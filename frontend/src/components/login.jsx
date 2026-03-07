@@ -8,7 +8,7 @@ const login = () => {
 
 
         <div className='text-white'>
-          <p>SignUp</p>
+          
         </div>
       
     </div>
