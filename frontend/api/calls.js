@@ -16,7 +16,7 @@ export const createUserAPI = async ({ name, email, password }) => {
     console.error(msg);
     throw new Error(msg);
   }
-  const url = `${baseUrl.replace(/\/+$/, '')}/create-user`;
+  const url = `${baseUrl.replace(/\/+$/, '')}/api/dsa-sheets/create-user`;
 
   try {
     const response = await fetch(url, {
