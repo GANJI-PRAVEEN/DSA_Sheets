@@ -32,7 +32,8 @@ export const createUser = async(req,res) => {
         });
         return res.status(200).json({
             success:true,
-            message:"Successfully created the user"
+            message:"Successfully created the user",
+            error
         })
 
     } catch (error) {
