@@ -47,7 +47,7 @@ const handleSubmit = async (e) => {
       }
 
     } catch (error) {
-      toast.error("Failed to create account. Please try again.");
+      toast.error(res.message);
       console.error("Signup error:", error);
     }
   }

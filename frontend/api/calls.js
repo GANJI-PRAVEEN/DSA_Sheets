@@ -16,25 +16,9 @@ export const createUserAPI = async ({ name, email, password }) => {
       },
       body: JSON.stringify({ name, email, password }),
     });
-
-    // Response might not contain valid JSON if status is not OK; capture text first
-    const text = await response.text();
-
-    if (!response.ok) {
-      const message = text || response.statusText;
-      const error = new Error(`Request failed with status ${response.status}: ${message}`);
-      error.status = response.status;
-      throw error;
-    }
-
-    try {
-      return JSON.parse(text);
-    } catch (parseError) {
-      console.error('Failed to parse JSON from createUserAPI response:', parseError, 'raw text:', text);
-      throw parseError;
-    }
+    const data = await response.json();
+    return data;
   } catch (networkError) {
-    // this will catch fetch errors such as network failure, CORS, etc.
     console.error('Network error while calling createUserAPI:', networkError);
     throw networkError;
   }

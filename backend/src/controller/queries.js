@@ -18,11 +18,20 @@ export const welcome = async(req,res) => {
 export const createUser = async(req,res) => {
     try {
         const {name,email,password}=req.body;
+        
         if(!name || !email || !password){
             return res.status(400).json({
                 message:"Pls provide all data",
                 success:false
             })
+        }
+        const existingUser = await usersModel.findOne({ Email:email });
+
+        if (existingUser) {
+        return res.status(400).json({
+            success: false,
+            message: "User already exists"
+        });
         }
 
         const user = await usersModel.create({
@@ -40,7 +49,7 @@ export const createUser = async(req,res) => {
         console.log("failed to create the user",error);
         return res.status(400).json({
             success:false,
-            message:"failed",
+            message:"failed to create the user",
             error
         })
         
