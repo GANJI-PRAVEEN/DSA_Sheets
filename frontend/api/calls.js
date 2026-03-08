@@ -1,14 +1,4 @@
 
-/**
- * Send a POST request to the backend to create a new user.
- *
- * @param {object} userInfo - Object containing name, email and password.
- * @param {string} userInfo.name
- * @param {string} userInfo.email
- * @param {string} userInfo.password
- * @returns {Promise<object>} Parsed JSON response from the server.
- * @throws {Error} When network request fails or server returns non-OK status.
- */
 export const createUserAPI = async ({ name, email, password }) => {
   const baseUrl = import.meta.env.VITE_API_URL;
   if (!baseUrl) {
@@ -16,7 +6,7 @@ export const createUserAPI = async ({ name, email, password }) => {
     console.error(msg);
     throw new Error(msg);
   }
-  const url = `${baseUrl.replace(/\/+$/, '')}/api/dsa-sheets/create-user`;
+  const url = `${baseUrl}/api/dsa-sheets/create-user`;
 
   try {
     const response = await fetch(url, {
