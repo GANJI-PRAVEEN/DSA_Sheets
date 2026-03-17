@@ -5,21 +5,12 @@ import dsaSheetsRouter from './routes/dsaSheetsRouter.js';
 
 const app = express();
 
-// CORS Configuration - Allow specific origins
-const corsOptions = {
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'http://127.0.0.1:5173',
-    'https://dsa-sheets-final.onrender.com',
-    'https://*.onrender.com' // Allow all Render domains
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-};
+app.use(cors({
+  origin: "https://dsasheets2.vercel.app",
+  methods: ["GET","POST","PUT","DELETE"],
+  credentials: true
+}));
 
-app.use(cors(corsOptions));
 app.use(express.json());
 
 // Health check route
