@@ -24,6 +24,7 @@ const ReachOutPage = () => {
               <p className="mt-1 text-sm font-medium text-blue-700">B.Tech CSE Student · MERN Stack Developer</p>
 
               <h2 className="mt-6 text-2xl font-bold tracking-tight text-slate-900">About Me</h2>
+              <p className="mt-1 text-xs font-medium uppercase tracking-wide text-slate-400">Designed by Praveen</p>
               <p className="mt-3 max-w-2xl text-slate-600">
                 I am a Ganji Praveen, a Student. I focus on building practical AI solutions that solve
                 real-world urban problems. I recently developed an AI-based smart traffic management and
@@ -31,6 +32,7 @@ const ReachOutPage = () => {
               </p>
 
               <h3 className="mt-7 text-lg font-semibold text-slate-900">Skills</h3>
+              <p className="mt-1 text-xs font-medium uppercase tracking-wide text-slate-400">Designed by Praveen</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {skills.map((skill) => (
                   <span
@@ -43,6 +45,7 @@ const ReachOutPage = () => {
               </div>
 
               <h3 className="mt-8 text-lg font-semibold text-slate-900">Reach Out</h3>
+              <p className="mt-1 text-xs font-medium uppercase tracking-wide text-slate-400">Designed by Praveen</p>
               <div className="mt-4 rounded-xl border border-blue-200 bg-blue-50 p-4">
                 <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">Gmail</p>
                 <p className="mt-1 text-sm font-semibold text-slate-900">{email}</p>
@@ -96,6 +99,8 @@ const ReachOutPage = () => {
                   WhatsApp / Phone (Optional)
                 </a>
               </div>
+
+              <p className="mt-8 text-center text-xs font-medium uppercase tracking-wide text-slate-400">Designed by Praveen</p>
           </div>
         </section>
       </main>
