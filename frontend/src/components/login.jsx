@@ -9,6 +9,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const [loading,setLoading] = useState(false);
   const [userData,setUserData] = useState({});
 
   const validateForm = () => {
@@ -33,11 +34,13 @@ const LoginPage = () => {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
+    setLoading(true);
     if (validateForm()) {
       // Handle login logic here
       console.log('Login attempt:', { email, password });
       const login = await userLoginAPI({email,password});
       if(login.success){
+        setLoading(false);
         toast.success(login.message);
         const loggedInUserData = login.user;
         setUserData(loggedInUserData);
@@ -51,6 +54,7 @@ const LoginPage = () => {
         navigate('/');
       }
       else{
+        setLoading(false);
         toast.error(login.message);
       }
       // You can add API call or navigation here
@@ -110,7 +114,7 @@ const LoginPage = () => {
               type="submit"
               className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 font-medium"
             >
-              Login
+              {loading? 'Please Wait...':'Login'}
             </button>
           </form>
 

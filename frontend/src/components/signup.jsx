@@ -10,6 +10,7 @@ const SignupPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const [loading,setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleNavigateToLogin = () => {
@@ -44,9 +45,11 @@ const handleSubmit = async (e) => {
 
   if (validateForm()) {
     try {
+      setLoading(true);
       const res = await createUserAPI({ name, email, password });
 
       if (res.success) {
+        setLoading(false);
         toast.success("Account created successfully!");
       } else {
         console.log("ERROR - ", res.error);
@@ -55,6 +58,8 @@ const handleSubmit = async (e) => {
 
     } catch (error) {
       console.error("Signup error:", error);
+    }finally{
+      setLoading(false);
     }
   }
 };
@@ -131,7 +136,7 @@ const handleSubmit = async (e) => {
               type="submit"
               className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 font-medium"
             >
-              Create Account
+              {loading? 'Please Wait...':'Create Account'}
             </button>
           </form>
 
