@@ -19,18 +19,11 @@ const ReachOutPage = () => {
 
       <main className="mx-auto max-w-5xl px-4 py-10 sm:py-12">
         <section className="overflow-hidden rounded-3xl border border-blue-100 bg-white shadow-sm">
-          <div className="grid gap-0 md:grid-cols-[280px_1fr]">
-            <aside className="bg-linear-to-b from-slate-900 to-blue-900 px-6 py-8 text-white sm:px-8">
-              <h1 className="mt-2 text-center text-2xl font-bold tracking-tight">Ganji Praveen</h1>
-              <p className="mt-1 text-center text-sm text-blue-100">[YStudent— B.Tech CSE Student / AI Developer]</p>
+          <div className="px-6 py-8 sm:px-8">
+              <h1 className="text-3xl font-bold tracking-tight text-slate-900">Ganji Praveen</h1>
+              <p className="mt-1 text-sm font-medium text-blue-700">B.Tech CSE Student · AI Developer</p>
 
-              <div className="mt-6 space-y-2 text-sm text-blue-50">
-                <p>Built: AI-Based Smart Traffic Management & Violation Detection System</p>
-              </div>
-            </aside>
-
-            <div className="px-6 py-8 sm:px-8">
-              <h2 className="text-2xl font-bold tracking-tight text-slate-900">About Me</h2>
+              <h2 className="mt-6 text-2xl font-bold tracking-tight text-slate-900">About Me</h2>
               <p className="mt-3 max-w-2xl text-slate-600">
                 I am a Ganji Praveen, a Student. I focus on building practical AI solutions that solve
                 real-world urban problems. I recently developed an AI-based smart traffic management and
@@ -103,7 +96,6 @@ const ReachOutPage = () => {
                   WhatsApp / Phone (Optional)
                 </a>
               </div>
-            </div>
           </div>
         </section>
       </main>
