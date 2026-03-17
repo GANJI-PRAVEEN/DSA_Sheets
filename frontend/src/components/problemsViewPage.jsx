@@ -1,0 +1,231 @@
+import React, { useEffect, useState } from 'react';
+import Navbar from './Navbar.jsx'
+import { useLocation } from 'react-router-dom';
+import { assignUpdateProblemStatusAPI, fetchProblemsAPI, fetchUserSolvedProblems, retrieveTopicsAPI } from '../../api/calls.js';
+import { toast } from 'react-toastify';
+
+const StriversproblemsView = () => {
+  const location = useLocation();
+  const {topicId,topicName,sheetDetails,sheetId} = location?.state;
+  const [loading,setLoading]= useState(false);
+
+  const [topics, setTopics] = useState(null);
+  const topicSelected = topics?.find(t => t.topicId === topicId);
+  // console.log("topicsSelected", topicSelected);
+  const [solvedProblems, setSolvedProblems] = useState([]);
+  const [problems,setProblems] = useState(null);
+
+  const user = JSON.parse(sessionStorage.getItem("user"));
+
+
+  useEffect(() => {
+    console.log("sheeetDetails ",sheetDetails);
+    const retrieveSheet = async () => {
+      const res = await retrieveTopicsAPI();
+      if (res.success) {
+        setTopics(res.data);
+      }
+      else{
+        console.log("eror while retrieving sheets ",res.message)
+      }
+    }
+
+    const retrieveUserProgress = async () => {
+      console.log("userId", user?._id);
+      const res = await fetchUserSolvedProblems({ sheetId: sheetId, userId: user?._id, topicId: topicId });
+      if (res.success) {
+        setSolvedProblems(res.solvedProblems);   //{topicId,userId,problemId,status}
+
+        console.log("solved problems", res.solvedProblems);
+      }
+      else {
+        console.log("error while retrieving user progress ",res.message)
+      }
+    }
+    // retrieveSheet();
+    retrieveUserProgress();
+    const retrieveProblems = async() => {
+      setLoading(true);
+      const res = await fetchProblemsAPI({
+        topicId,
+        sheetId
+      });
+      if(res.success){
+        setLoading(false);
+        console.log("problems",res.problems)
+
+        setProblems(res.problems);
+      }
+      else{
+        console.log(res.message)
+      }
+    }
+    retrieveProblems();
+    // retrieveSheetDetails();
+  }, [sheetId,topicId]);
+
+  const handleCheckBoxChange = async (problemId) => {
+    const isSolved = solvedProblems.some(p => p.problemId === problemId);
+
+    const status = isSolved ? 'unsolved' : 'solved';
+
+    const res = await assignUpdateProblemStatusAPI({ sheetId:sheetId,userId: user?._id, topicId: topicId, problemId: problemId, status: status });
+    if (res.success) {
+      toast.success("progress updated");
+    }
+    else {
+      console.log("error", res.error)
+    }
+    if (isSolved) {
+      setSolvedProblems(prev => prev.filter(p => p.problemId !== problemId));
+    }
+    else {
+      setSolvedProblems(prev => [...prev, { topicId: topicId, status: status, problemId: problemId, userId: user?._id }]);
+    }
+
+  }
+
+  return (
+    <div className="font-sans">
+      <Navbar />
+      <main className="max-w-5xl mx-auto px-4 py-8">
+        <div className="flex items-center justify-between gap-4 mb-6">
+          <div>
+            <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate-500">
+              {sheetDetails?.sheetName || 'abc'}
+            </p>
+            <h1 className="mt-1 text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900">
+              {topicName || 'Selected Topic'}
+            </h1>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">
+              Start solving handpicked problems for {topicName}
+              <span className="font-semibold text-slate-900">
+                
+              </span>
+
+            </p>
+          </div>
+          {/* Solved problems circle */}
+          <div className="flex flex-col items-center">
+            <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-slate-900/70 shadow-md shadow-emerald-500/30">
+              <div className="absolute inset-[3px] rounded-full bg-gradient-to-tr from-emerald-500 via-lime-400 to-emerald-600" />
+              <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-slate-950 text-white text-xs font-medium">
+                <span className="leading-tight text-center">
+                  <span className="block text-base font-semibold">
+                    {solvedProblems.filter(p => p.status === "solved").length}
+                  </span>
+                  <span className="block text-[9px] uppercase tracking-wide text-emerald-200">
+                    Solved
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto rounded-xl border-2 border-slate-300 bg-white shadow-sm">
+          <table className="min-w-full border-collapse text-[13px]">
+            <thead className="bg-slate-50 border-b-2 border-slate-300">
+              <tr>
+                <th className="px-4 py-3 text-left text-[11px] font-medium text-slate-500  tracking-wide ">
+                  S.No
+                </th>
+                <th className="px-4 py-3 text-left text-[11px] font-medium text-slate-500  tracking-wide">
+                  Problem Name
+                </th>
+                <th className="px-4 py-3 text-left text-[11px] font-medium text-slate-500  tracking-wide">
+                  Difficulty
+                </th>
+                <th className="px-6 py-3 text-left text-[11px] font-medium text-slate-500  tracking-wide">
+                  Leetcode
+                </th>
+                <th className="px-4 py-3 text-left text-[11px] font-medium text-slate-500  tracking-wide">
+                  GFG
+                </th>
+                <th className="px-4 py-3 text-left text-[11px] font-medium text-slate-500  tracking-wide">
+                  CodingNinjas
+                </th>
+                <th className="px-4 py-3 text-center text-[11px] font-medium text-slate-500  tracking-wide">
+                  Status
+                </th>
+              </tr>
+            </thead>
+            <tbody className="text-sm">
+              {/* Sample row – replace with dynamic data later */}
+              {problems?.map((problem, index) => (
+                <tr key={index} className={`${solvedProblems?.some(p => p.problemId === problem._id) ? 'bg-green-600/40' : ''} border-b-2 border-slate-200 transition-colors`}>
+                  <td className="px-4 py-3 text-left text-[13px] font-medium text-slate-700 border-r-2 border-slate-200">
+                    {index + 1}
+                  </td>
+                  <td className="px-4 py-3 text-left text-[13px] font-medium text-slate-800 border-r-2 border-slate-200">
+                    {problem.problemName}
+                  </td>
+                  <td className={`${problem.difficulty === 'easy' ? 'text-green-600' : problem.difficulty === 'medium' ? 'text-yellow-600' : 'text-red-600'} px-4 py-3 text-left text-[13px] font-medium  border-r-2 border-slate-200`}>
+                    {problem.difficulty.charAt(0).toUpperCase() + problem.difficulty.slice(1)}
+                  </td>
+                  <td className="px-6 py-3 text-left text-[13px] font-medium text-slate-700 border-r-2 border-slate-300 ">
+                    {problem?.links?.lc_link ? (
+                      <a
+                        href={problem.links.lc_link}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center rounded-full border border-violet-200 px-3 py-1 text-[11px] font-semibold text-violet-700 hover:bg-violet-50 hover:border-violet-300 transition-colors"
+                      >
+                        Link
+                      </a>
+                    ) : (
+                      <span className="text-slate-400">-</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-left text-[13px] font-medium text-slate-700 border-r-2 border-slate-300 ">
+                    {problem?.links?.gc_link || problem?.links?.gfg_link ? (
+                      <a
+                        href={problem.links.gc_link || problem.links.gfg_link}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center rounded-full border border-violet-200 px-3 py-1 text-[11px] font-semibold text-violet-700 hover:bg-violet-50 hover:border-violet-300 transition-colors"
+                      >
+                        Link
+                      </a>
+                    ) : (
+                      <span className="text-slate-400">-</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-left text-[13px] font-medium text-slate-700 border-r-2 border-slate-300 ">
+                    {problem?.links?.coding_ninjas_link ? (
+                      <a
+                        href={problem.links.coding_ninjas_link}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center rounded-full border border-violet-200 px-3 py-1 text-[11px] font-semibold text-violet-700 hover:bg-violet-50 hover:border-violet-300 transition-colors"
+                      >
+                        Link
+                      </a>
+                    ) : (
+                      <span className="text-slate-400">-</span>
+                    )}
+                  </td>
+                  <td className="px-6 py-3 text-left text-[18px] font-medium text-slate-700 border-r-2 border-slate-300">
+                    <input
+                      checked={solvedProblems?.some(
+                        (p) => p.problemId === problem._id
+                      )}
+                      type="checkbox"
+                      onChange={() => handleCheckBoxChange(problem._id)}
+                    />
+                  </td>
+
+
+
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default StriversproblemsView;
+

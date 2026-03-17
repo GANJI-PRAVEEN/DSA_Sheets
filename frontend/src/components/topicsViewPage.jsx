@@ -1,0 +1,202 @@
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import Navbar from "./Navbar";
+import {
+  fetchProblemsAPI,
+  fetchTopicWiseProblemsSolved,
+  retrieveTopicsAPI,
+} from "../../api/calls";
+import convertedStriverSheet from "../assets/convertedStriverSheet.json";
+import { toast } from "react-toastify";
+const StriversTopicsPage = () => {
+  const location  = useLocation();
+  const {sheetId,sheetDetails} = location?.state;
+  console.log("sheetID received",sheetId);
+  const [topics, setTopics] = useState(null);
+  const user = JSON.parse(sessionStorage.getItem("user"));
+
+  const [topicWiseSolvedProblems, setTopicWiseSolvedProblems] = useState({});
+  useEffect(() => {
+    const retrieveTopics = async() => {
+      const res = await retrieveTopicsAPI({sheetId:sheetId});
+      if (res.success) {
+        setTopics(res.topics);
+
+      } 
+      else{
+        console.log("failed while retreiving topics ",res.message);
+      }
+    };
+
+
+
+    const retrieveTopicWiseSolvedProblems = async () => {
+      console.log("userId", user?._id);
+      const res = await fetchTopicWiseProblemsSolved({ sheetId:sheetId,userId: user?._id });
+      if (res.success) {
+        // {
+        //   "<topicID_1>": ["<problemID_1>", "<problemID_2>", ...],
+        //   "<topicID_2>": ["<problemID_3>", ...],
+        //   ...
+        // }
+        setTopicWiseSolvedProblems(res.topicWiseProblems || {}); // { [topicID]: [problemID, ...] }
+        console.log("topicwise solved problems", res.topicWiseProblems);
+      } else {
+        console.log("error while retrieving topicwise solved problems",res.message)
+      }
+    };
+    retrieveTopics();
+    retrieveTopicWiseSolvedProblems();
+  }, [sheetId]);
+
+  const openProblems = (topic) => {
+    const topicId = topic.topicId;
+    const topicName = topic.topicName;
+    console.log("topic Selected", topicId);
+    navigate("/striver-sheet-problems", { state: { topicId:topicId,topicName:topicName, sheetDetails:sheetDetails,sheetId:sheetId } });
+  };
+
+  const retrieveProblems = async({topicId}) => {
+    const res = await fetchProblemsAPI({
+      topicId,
+      sheetId
+    });
+    if(res.success){
+      console.log("problems",res.problems)
+      setProblems(res.problems);
+    }
+    else{
+      console.log(res.message)
+      toast.error(res.message);
+    }
+  }
+
+  const navigate = useNavigate();
+  return (
+    <div>
+      <Navbar />
+      <div className="max-w-5xl mx-auto px-4 py-8">
+        <div className="flex items-start justify-between gap-4 mb-6">
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+              {sheetDetails?.sheetName} Topics
+            </h1>
+            <p className="mt-2 text-sm text-slate-600">
+              Pick a topic to focus your practice. See how many problems you’ve
+              solved at a glance.
+            </p>
+          </div>
+
+          {/* Overall solved problems circle */}
+          <div className="flex flex-col items-center">
+            <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-slate-900/70 shadow-md shadow-emerald-500/30">
+              <div className="absolute inset-[3px] rounded-full bg-gradient-to-tr from-emerald-500 via-lime-400 to-emerald-600" />
+              <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-slate-950 text-white text-xs font-medium">
+                <span className="leading-tight text-center">
+                  <span className="block text-base font-semibold">
+                    {Object.values(topicWiseSolvedProblems || {}).reduce(
+                      (total, problems) => total + (problems?.length || 0),
+                      0,
+                    )}
+                  </span>
+                  <span className="block text-[9px] uppercase tracking-wide text-emerald-200">
+                    Solved
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {topics
+            ?.slice()
+            .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+            .map((topic) => {
+              const totalProblems = topic.totalProblems ?? 0;
+              const problemsSolvedForTopic =
+                topicWiseSolvedProblems?.[topic.topicId]?.length ?? 0;
+              const solvedPercent = totalProblems
+                ? Math.round((problemsSolvedForTopic / totalProblems) * 100)
+                : 0;
+
+              return (
+                <div
+                  key={convertedStriverSheet.sheetId}
+                  className="flex h-52 flex-col justify-between rounded-2xl border border-slate-700 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-5 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all"
+                >
+                  {/* Top: topic title */}
+                  <div className='flex'>
+                    <span className="bg-slate-800 border-2 border-emerald-400 text-emerald-400 font-mono font-bold text-sm px-2 py-1 rounded-md shadow-md">
+                      {String(topic.position + 1).padStart(2, "0")}
+                    </span>
+                    <h2 className="text-lg sm:text-xl font-semibold text-white leading-snug pl-4">
+                      {topic.topicName}
+                    </h2>
+                  </div>
+
+                  {/* Middle: numeric stats using full width */}
+                  <div className="mt-3 grid grid-cols-3 gap-2 text-[11px] text-slate-200">
+                    <div className="rounded-lg bg-slate-900/70 px-2.5 py-2">
+                      <p className="text-[10px] uppercase tracking-wide text-slate-400">
+                        Total
+                      </p>
+                      <p className="mt-1 text-base font-semibold text-slate-50">
+                        {totalProblems}
+                      </p>
+                    </div>
+                    <div className="rounded-lg bg-slate-900/70 px-2.5 py-2">
+                      <p className="text-[10px] uppercase tracking-wide text-emerald-300">
+                        Solved
+                      </p>
+                      <p className="mt-1 text-base font-semibold text-emerald-300">
+                        {problemsSolvedForTopic}
+                      </p>
+                    </div>
+                    <div className="rounded-lg bg-slate-900/70 px-2.5 py-2">
+                      <p className="text-[10px] uppercase tracking-wide text-amber-300">
+                        Remaining
+                      </p>
+                      <p className="mt-1 text-base font-semibold text-amber-300">
+                        {Math.max(totalProblems - problemsSolvedForTopic, 0)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Bottom: progress + button row */}
+                  <div className="mt-3 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-slate-900/60 shadow-md shadow-emerald-500/40">
+                        <div className="absolute inset-[2px] rounded-full bg-gradient-to-tr from-emerald-500 via-lime-400 to-emerald-600" />
+                        <div className="relative flex h-7 w-7 items-center justify-center rounded-full bg-slate-950 text-white text-[9px] font-semibold">
+                          <span className="leading-tight text-center">
+                            {solvedPercent}
+                            <span className="text-[8px] align-top">%</span>
+                          </span>
+                        </div>
+                      </div>
+                      <div className="w-24 h-1.5 rounded-full bg-slate-800/70 overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-emerald-400 via-lime-300 to-emerald-500 transition-all"
+                          style={{ width: `${solvedPercent}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      className="px-4 py-2 rounded-full bg-indigo-500 hover:bg-indigo-400 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-indigo-500/40 active:scale-[0.98] transition"
+                      onClick={() => openProblems(topic)}
+                    >
+                      Solve now
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default StriversTopicsPage;

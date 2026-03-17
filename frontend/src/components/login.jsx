@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import Background from '../Background';
+import {userLoginAPI} from '../../api/calls.js'
+import {toast} from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+  const [userData,setUserData] = useState({});
 
   const validateForm = () => {
     const newErrors = {};
@@ -26,11 +31,28 @@ const LoginPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     if (validateForm()) {
       // Handle login logic here
       console.log('Login attempt:', { email, password });
+      const login = await userLoginAPI({email,password});
+      if(login.success){
+        toast.success(login.message);
+        const loggedInUserData = login.user;
+        setUserData(loggedInUserData);
+        const user = {
+          _id:loggedInUserData._id,
+          email:loggedInUserData.Email,
+          name:loggedInUserData.Name
+        }
+        sessionStorage.setItem("user",JSON.stringify(user));
+        console.log("LoggedInUserID",loggedInUserData._id);
+        navigate('/');
+      }
+      else{
+        toast.error(login.message);
+      }
       // You can add API call or navigation here
     }
   };
@@ -95,7 +117,7 @@ const LoginPage = () => {
           <div className="mt-6 text-center">
             <p className="text-gray-600">
               Don't have an account?{' '}
-              <a href="#" className="text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200">
+              <a href="#" className="text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200" onClick={() => navigate('/signup')}>
                 Sign up
               </a>
             </p>

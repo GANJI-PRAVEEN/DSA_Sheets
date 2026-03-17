@@ -1,24 +1,25 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import {BrowserRouter,Routes,Route} from 'react-router-dom'
-import Background from './Background'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Login from './components/login.jsx'
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Signup from './components/signup.jsx'
+import HomePage from './components/HomePage.jsx';
+import TopicsViewPage from './components/topicsViewPage.jsx';
+import ProblemsViewPage from './components/problemsViewPage.jsx';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/login' element={<Login/>}/>
-        <Route path='/signup' element={<Signup/>}/>
+        <Route path='/login' element={<Login />} />
+        <Route path='/signup' element={<Signup />} />
+        <Route path='/striver-sheet-topics' element={<TopicsViewPage/>} />
+        <Route path='/striver-sheet-problems' element={<ProblemsViewPage />} />
+        <Route path='/' element={<HomePage />} />
       </Routes>
-      <ToastContainer/>
+      <ToastContainer />
     </BrowserRouter>
   )
-
 }
 
 export default App

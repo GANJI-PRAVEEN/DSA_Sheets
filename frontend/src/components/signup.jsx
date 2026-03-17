@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
 import Background from '../Background';
 import { createUserAPI } from '../../api/calls';
+
 import {toast} from 'react-toastify'
+import { useNavigate } from "react-router-dom";
 
 const SignupPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+
+  const handleNavigateToLogin = () => {
+    navigate('/login');
+  }
 
   const validateForm = () => {
     const newErrors = {};
@@ -47,7 +54,6 @@ const handleSubmit = async (e) => {
       }
 
     } catch (error) {
-      toast.error(res.message);
       console.error("Signup error:", error);
     }
   }
@@ -132,7 +138,7 @@ const handleSubmit = async (e) => {
           <div className="mt-6 text-center">
             <p className="text-gray-600">
               Already have an account?{' '}
-              <a href="#" className="text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200">
+              <a href="" className="text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200" onClick={handleNavigateToLogin}>
                 Login
               </a>
             </p>
