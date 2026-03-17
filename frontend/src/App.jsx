@@ -13,8 +13,8 @@ function App() {
       <Routes>
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
-        <Route path='/striver-sheet-topics' element={<TopicsViewPage/>} />
-        <Route path='/striver-sheet-problems' element={<ProblemsViewPage />} />
+        <Route path='/sheet-topics' element={<TopicsViewPage/>} />
+        <Route path='/sheet-problems' element={<ProblemsViewPage />} />
         <Route path='/' element={<HomePage />} />
       </Routes>
       <ToastContainer />

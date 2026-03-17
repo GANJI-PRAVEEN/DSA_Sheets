@@ -79,7 +79,7 @@ const StriversTopicsPage = () => {
     const topicId = topic.topicId;
     const topicName = topic.topicName;
     console.log("topic Selected", topicId);
-    navigate("/striver-sheet-problems", {
+    navigate("/sheet-problems", {
       state: {
         topicId: topicId,
         topicName: topicName,

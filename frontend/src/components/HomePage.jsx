@@ -40,7 +40,7 @@ const HomePage = () => {
   }, [!user]);
 
   const openSheet = (sheetId, sheet) => {
-    navigate("/striver-sheet-topics", { state: { sheetId: sheetId, sheetDetails: sheet } });
+    navigate("/sheet-topics", { state: { sheetId: sheetId, sheetDetails: sheet } });
   };
 
   return (
