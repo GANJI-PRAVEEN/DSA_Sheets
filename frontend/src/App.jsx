@@ -6,6 +6,7 @@ import Signup from './components/signup.jsx'
 import HomePage from './components/HomePage.jsx';
 import TopicsViewPage from './components/topicsViewPage.jsx';
 import ProblemsViewPage from './components/problemsViewPage.jsx';
+import ReachOutPage from './components/ReachOutPage.jsx';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path='/signup' element={<Signup />} />
         <Route path='/sheet-topics' element={<TopicsViewPage/>} />
         <Route path='/sheet-problems' element={<ProblemsViewPage />} />
+        <Route path='/reach-out' element={<ReachOutPage />} />
         <Route path='/' element={<HomePage />} />
       </Routes>
       <ToastContainer />

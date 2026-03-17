@@ -27,7 +27,13 @@ const Navbar = () => {
         </button>
 
         {/* CTA / Auth */}
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
+          <button
+            className="hover:cursor-pointer rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-800 shadow-sm transition-colors duration-200 hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-neutral-300"
+            onClick={() => navigate('/reach-out')}
+          >
+            Reach Out
+          </button>
           <button
             className="hover:cursor-pointer rounded-lg border  bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-300"
             onClick={() => navigate('/login')}
