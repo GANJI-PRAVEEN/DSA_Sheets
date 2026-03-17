@@ -21,7 +21,7 @@ const ReachOutPage = () => {
         <section className="overflow-hidden rounded-3xl border border-blue-100 bg-white shadow-sm">
           <div className="px-6 py-8 sm:px-8">
               <h1 className="text-3xl font-bold tracking-tight text-slate-900">Ganji Praveen</h1>
-              <p className="mt-1 text-sm font-medium text-blue-700">B.Tech CSE Student · AI Developer</p>
+              <p className="mt-1 text-sm font-medium text-blue-700">B.Tech CSE Student · MERN Stack Developer</p>
 
               <h2 className="mt-6 text-2xl font-bold tracking-tight text-slate-900">About Me</h2>
               <p className="mt-3 max-w-2xl text-slate-600">
