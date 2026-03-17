@@ -2,7 +2,16 @@ import React from 'react';
 import Navbar from './Navbar';
 
 const ReachOutPage = () => {
+  const email = 'ganjipraveen444@gmail.com';
   const skills = ['C++','Java','Python','React','Express','Node.js','MongoDB','Firebase','REST API','Android Development'];
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(email);
+    } catch (error) {
+      console.error('Unable to copy email', error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -12,16 +21,7 @@ const ReachOutPage = () => {
         <section className="overflow-hidden rounded-3xl border border-blue-100 bg-white shadow-sm">
           <div className="grid gap-0 md:grid-cols-[280px_1fr]">
             <aside className="bg-linear-to-b from-slate-900 to-blue-900 px-6 py-8 text-white sm:px-8">
-              <div className="mx-auto h-36 w-36 overflow-hidden rounded-full border-4 border-white/70 bg-white/20">
-                <img
-                  src="/profile-photo.jpeg"
-                  alt="Profile"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <p className="mt-4 text-center text-xs text-blue-100">Place photo at /public/profile-photo.jpg</p>
-
-              <h1 className="mt-5 text-center text-2xl font-bold tracking-tight">Ganji Praveen</h1>
+              <h1 className="mt-2 text-center text-2xl font-bold tracking-tight">Ganji Praveen</h1>
               <p className="mt-1 text-center text-sm text-blue-100">[YStudent— B.Tech CSE Student / AI Developer]</p>
 
               <div className="mt-6 space-y-2 text-sm text-blue-50">
@@ -50,9 +50,29 @@ const ReachOutPage = () => {
               </div>
 
               <h3 className="mt-8 text-lg font-semibold text-slate-900">Reach Out</h3>
+              <div className="mt-4 rounded-xl border border-blue-200 bg-blue-50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">Gmail</p>
+                <p className="mt-1 text-sm font-semibold text-slate-900">{email}</p>
+                <div className="mt-3 flex gap-2">
+                  <a
+                    href={`mailto:${email}`}
+                    className="rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-blue-700"
+                  >
+                    Send Email
+                  </a>
+                  <button
+                    type="button"
+                    onClick={copyEmail}
+                    className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 transition-colors hover:bg-slate-50"
+                  >
+                    Copy Gmail
+                  </button>
+                </div>
+              </div>
+
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <a
-                  href="mailto:ganjipraveen444@gmail.com"
+                  href={`mailto:${email}`}
                   className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-50"
                 >
                   Email
