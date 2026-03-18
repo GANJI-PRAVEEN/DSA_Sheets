@@ -13,8 +13,8 @@ const Navbar = () => {
           onClick={() => navigate('/')}
           className="flex min-w-0 flex-1 items-center gap-2 rounded-xl px-1 py-1 transition-colors hover:cursor-pointer hover:bg-neutral-50 sm:gap-3 sm:px-2"
         >
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-indigo-100 bg-linear-to-tr from-indigo-600 to-sky-500 shadow-sm">
-            <span className="text-sm font-semibold text-white">DS</span>
+          <div className="h-9 w-9 overflow-hidden rounded-xl border border-indigo-100 shadow-sm">
+            <img src="/logo.png" alt="DSA Sheets Logo" className="h-full w-full object-cover" />
           </div>
           <div className="min-w-0 flex flex-col items-start leading-tight">
             <span className="truncate text-sm font-semibold tracking-normal text-neutral-900 sm:tracking-wide">
