@@ -26,9 +26,8 @@ const ReachOutPage = () => {
               <h2 className="mt-6 text-2xl font-bold tracking-tight text-slate-900">About Me</h2>
               <p className="mt-1 text-xs font-medium uppercase tracking-wide text-slate-400">Designed by Praveen</p>
               <p className="mt-3 max-w-2xl text-slate-600">
-                I am a Ganji Praveen, a Student. I focus on building practical AI solutions that solve
-                real-world urban problems. I recently developed an AI-based smart traffic management and
-                violation detection system. Passionate about AI, I enjoy transforming ideas into impactful products.
+                I am a Ganji Praveen, a Student. I Fous building full stack applications to solve basic needs for the people.
+                Iam very enthusiast to learn new technologies and explore in the same way.
               </p>
 
               <h3 className="mt-7 text-lg font-semibold text-slate-900">Skills</h3>
