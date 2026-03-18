@@ -163,7 +163,7 @@ const StriversTopicsPage = () => {
                   >
                     {/* Top: topic title */}
                     <div className="flex items-start gap-3">
-                      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border-2 border-emerald-400 bg-slate-800 text-sm font-bold font-mono text-emerald-400 shadow-md">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border-2 border-emerald-400 bg-slate-800 text-xs font-bold font-mono text-emerald-400 shadow-md">
                         {String(displayPosition).padStart(2, "0")}
                       </span>
                       <h2 className="min-w-0 flex-1 text-lg font-semibold leading-snug text-white sm:text-xl">
