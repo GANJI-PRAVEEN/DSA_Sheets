@@ -96,7 +96,7 @@ const ReachOutPage = () => {
                   href="tel:+919381772066"
                   className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-50"
                 >
-                  WhatsApp / Phone (Optional)
+                  WhatsApp / Phone 
                 </a>
               </div>
 
