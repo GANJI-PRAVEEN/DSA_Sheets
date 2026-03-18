@@ -162,11 +162,11 @@ const StriversTopicsPage = () => {
                     className="flex h-52 flex-col justify-between rounded-2xl border border-slate-700 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-5 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all"
                   >
                     {/* Top: topic title */}
-                    <div className="flex">
-                      <span className="bg-slate-800 border-2 border-emerald-400 text-emerald-400 font-mono font-bold text-sm px-2 py-1 rounded-md shadow-md">
-                        {displayPosition}
+                    <div className="flex items-start gap-3">
+                      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border-2 border-emerald-400 bg-slate-800 text-sm font-bold font-mono text-emerald-400 shadow-md">
+                        {String(displayPosition).padStart(2, "0")}
                       </span>
-                      <h2 className="text-lg sm:text-xl font-semibold text-white leading-snug pl-4">
+                      <h2 className="min-w-0 flex-1 text-lg font-semibold leading-snug text-white sm:text-xl">
                         {topic.topicName}
                       </h2>
                     </div>
