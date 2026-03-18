@@ -38,7 +38,7 @@ const Navbar = () => {
             className="hover:cursor-pointer rounded-lg border bg-blue-600 px-2.5 py-2 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-300 sm:px-4 sm:text-sm"
             onClick={() => navigate('/login')}
           >
-            Log in
+            Log Out
           </button>
         </div>
       </nav>

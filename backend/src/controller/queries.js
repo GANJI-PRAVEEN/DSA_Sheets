@@ -246,6 +246,7 @@ export const createUser = async (req, res) => {
         success: false,
       });
     }
+    const hashedPassword = await bcry
     const existingUser = await usersModel.findOne({ Email: email });
 
     if (existingUser) {
