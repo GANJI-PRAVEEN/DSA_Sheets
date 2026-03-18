@@ -2,7 +2,6 @@
 import express from 'express';
 import cors from 'cors';
 import dsaSheetsRouter from './routes/dsaSheetsRouter.js';
-import feedbackRouter from './routes/feedbackRouter.js';
 
 const app = express();
 
@@ -25,7 +24,6 @@ app.get('/health', (req, res) => {
 
 // Main API routes
 app.use('/api/dsa-sheets', dsaSheetsRouter);
-app.use('/api/feedback', feedbackRouter);
 
 // 404 handler - return JSON instead of HTML
 app.use((req, res) => {

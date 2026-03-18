@@ -1,52 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Navbar from './Navbar';
-import { submitFeedbackAPI } from '../../api/calls';
 
 const ReachOutPage = () => {
   const email = 'ganjipraveen444@gmail.com';
   const skills = ['C++','Java','Python','React','Express','Node.js','MongoDB','Firebase','REST API','Android Development'];
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [feedbackStatus, setFeedbackStatus] = useState({ type: '', message: '' });
 
   const copyEmail = async () => {
     try {
       await navigator.clipboard.writeText(email);
     } catch (error) {
       console.error('Unable to copy email', error);
-    }
-  };
-
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmitFeedback = async (event) => {
-    event.preventDefault();
-    setFeedbackStatus({ type: '', message: '' });
-    setIsSubmitting(true);
-
-    try {
-      const response = await submitFeedbackAPI(formData);
-
-      if (response?.success) {
-        setFeedbackStatus({ type: 'success', message: 'Thanks! Your feedback has been sent.' });
-        setFormData({ name: '', email: '', message: '' });
-      } else {
-        setFeedbackStatus({ type: 'error', message: response?.message || 'Unable to send feedback right now.' });
-      }
-    } catch (error) {
-      setFeedbackStatus({ type: 'error', message: 'Unable to send feedback right now.' });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -136,79 +99,6 @@ const ReachOutPage = () => {
                   WhatsApp / Phone (Optional)
                 </a>
               </div>
-
-              <h3 className="mt-8 text-lg font-semibold text-slate-900">Feedback</h3>
-              <p className="mt-1 text-xs font-medium uppercase tracking-wide text-slate-400">Designed by Praveen</p>
-
-              <form onSubmit={handleSubmitFeedback} className="mt-4 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div>
-                    <label htmlFor="name" className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                      Name
-                    </label>
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      required
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-500"
-                      placeholder="Your name"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="email" className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                      Email
-                    </label>
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      required
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-500"
-                      placeholder="you@example.com"
-                    />
-                  </div>
-                </div>
-
-                <div className="mt-3">
-                  <label htmlFor="message" className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows={4}
-                    required
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-500"
-                    placeholder="Share your feedback"
-                  />
-                </div>
-
-                {feedbackStatus.message && (
-                  <p
-                    className={`mt-3 text-sm font-medium ${
-                      feedbackStatus.type === 'success' ? 'text-emerald-600' : 'text-rose-600'
-                    }`}
-                  >
-                    {feedbackStatus.message}
-                  </p>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {isSubmitting ? 'Sending...' : 'Submit Feedback'}
-                </button>
-              </form>
 
               <p className="mt-8 text-center text-xs font-medium uppercase tracking-wide text-slate-400">Designed by Praveen</p>
           </div>
