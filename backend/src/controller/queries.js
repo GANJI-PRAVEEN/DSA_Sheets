@@ -8,6 +8,7 @@ import loveBabbarSheet from '../data/loveBabbarConverted.json' with { type: "jso
 import apnaCollegeSheet from '../data/apnaCollegeConverted.json' with { type: "json" };
 import problemsModel from "../models/problems.model.js";
 import sheetsModel from "../models/sheets.model.js";
+import bcrypt from "bcryptjs";
 
 export const welcome = async (req, res) => {
   try {
@@ -181,18 +182,40 @@ export const insertApnaCollegeSheet = async(req,res) => {
 export const userLoginCheck = async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password) {
+    const normalizedEmail = String(email || "").trim().toLowerCase();
+    const normalizedPassword = String(password || "").trim();
+
+    if (!normalizedEmail || !normalizedPassword) {
       return res.status(400).json({
         message: "Pls provide all data",
         success: false,
       });
     }
 
-    const existUser = await usersModel.findOne({
-      Email: email,
-      Password: password,
-    });
-    if (existUser) {
+    const existUser = await usersModel.findOne({ Email: normalizedEmail });
+
+    if (!existUser) {
+      return res.status(401).json({
+        success: false,
+        message: "Incorrect Login Credentials",
+      });
+    }
+
+    const isHashedPassword = /^\$2[aby]\$\d{2}\$.{53}$/.test(existUser.Password || "");
+    let isPasswordValid = false;
+
+    if (isHashedPassword) {
+      isPasswordValid = await bcrypt.compare(normalizedPassword, existUser.Password);
+    } else {
+      isPasswordValid = existUser.Password === normalizedPassword;
+      if (isPasswordValid) {
+        const hashedPassword = await bcrypt.hash(normalizedPassword, 10);
+        existUser.Password = hashedPassword;
+        await existUser.save();
+      }
+    }
+
+    if (isPasswordValid) {
       // Return user data without password for security
       const userData = {
         _id: existUser._id,
@@ -239,15 +262,17 @@ export const AddTopics = async (req, res) => {
 export const createUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
+    const normalizedName = String(name || "").trim();
+    const normalizedEmail = String(email || "").trim().toLowerCase();
+    const normalizedPassword = String(password || "").trim();
 
-    if (!name || !email || !password) {
+    if (!normalizedName || !normalizedEmail || !normalizedPassword) {
       return res.status(400).json({
         message: "Pls provide all data",
         success: false,
       });
     }
-    const hashedPassword = await bcry
-    const existingUser = await usersModel.findOne({ Email: email });
+    const existingUser = await usersModel.findOne({ Email: normalizedEmail });
 
     if (existingUser) {
       return res.status(400).json({
@@ -256,10 +281,12 @@ export const createUser = async (req, res) => {
       });
     }
 
+    const hashedPassword = await bcrypt.hash(normalizedPassword, 10);
+
     const user = await usersModel.create({
-      Name: name,
-      Email: email,
-      Password: password,
+      Name: normalizedName,
+      Email: normalizedEmail,
+      Password: hashedPassword,
     });
     return res.status(201).json({
       success: true,
