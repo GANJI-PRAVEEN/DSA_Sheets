@@ -140,7 +140,7 @@ const StriversTopicsPage = () => {
             {topics
               ?.slice()
               .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
-              .map((topic) => {
+              .map((topic, index) => {
                 const totalProblems = topic.totalProblems ?? 0;
                 const problemsSolvedForTopic =
                   topicWiseSolvedProblems?.[topic.topicId]?.length ?? 0;
@@ -149,6 +149,12 @@ const StriversTopicsPage = () => {
                       (problemsSolvedForTopic / totalProblems) * 100
                     )
                   : 0;
+                const numericPosition = Number(topic.position);
+                const displayPosition = Number.isFinite(numericPosition)
+                  ? numericPosition > 0
+                    ? numericPosition
+                    : index + 1
+                  : index + 1;
 
                 return (
                   <div
@@ -158,7 +164,7 @@ const StriversTopicsPage = () => {
                     {/* Top: topic title */}
                     <div className="flex">
                       <span className="bg-slate-800 border-2 border-emerald-400 text-emerald-400 font-mono font-bold text-sm px-2 py-1 rounded-md shadow-md">
-                        {String(topic.position + 1).padStart(2, "0")}
+                        {displayPosition}
                       </span>
                       <h2 className="text-lg sm:text-xl font-semibold text-white leading-snug pl-4">
                         {topic.topicName}
