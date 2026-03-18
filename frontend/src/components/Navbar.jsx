@@ -14,7 +14,7 @@ const Navbar = () => {
           className="flex min-w-0 flex-1 items-center gap-2 rounded-xl px-1 py-1 transition-colors hover:cursor-pointer hover:bg-neutral-50 sm:gap-3 sm:px-2"
         >
           <div className="h-9 w-9 overflow-hidden rounded-xl border border-indigo-100 shadow-sm">
-            <img src="/logo3.png" alt="DSA Sheets Logo" className="h-full w-full object-cover" />
+            <img src="/logo4.png" alt="DSA Sheets Logo" className="h-full w-full object-cover" />
           </div>
           <div className="min-w-0 flex flex-col items-start leading-tight">
             <span className="truncate text-sm font-semibold tracking-normal text-neutral-900 sm:tracking-wide">
