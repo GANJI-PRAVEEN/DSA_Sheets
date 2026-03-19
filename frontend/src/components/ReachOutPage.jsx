@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Navbar from './Navbar';
-import { sendFeedback, sendFeedbackAPI } from '../../api/calls';
+
 import { toast } from 'react-toastify';
 
 const ReachOutPage = () => {
@@ -32,38 +32,6 @@ const ReachOutPage = () => {
     })
   }
 
-  const handleSubmit = async (e)=>{
-    e.preventDefault();
-
-    try{
-      setLoading(true);
-      const res = await sendFeedbackAPI({name:form.name,email:form.email,message:form.message});
-
-      if(res.success){
-        setLoading(false);
-        toast.success(res.message);
-        setStatus("Feedback sent successfully ✅")
-
-        setForm({
-          name:"",
-          email:"",
-          message:""
-        })
-      }
-      else{
-        setLoading(false);
-        console.log(res.message);
-        console.log("Error ", res.error);
-        toast.error(res.message);
-        setStatus("Something went wrong ❌")
-      }
-
-    }catch(err){
-      setLoading(false);
-      console.log("❌ Frontend Error:", err);
-      setStatus("Server error ❌")
-    }
-  }
 
   return (
     <div className="min-h-screen bg-slate-50">

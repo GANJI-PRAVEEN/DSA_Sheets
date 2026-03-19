@@ -120,20 +120,3 @@ export const fetchProblemsAPI = async({
   return data;
 }
 
-
-export const sendFeedbackAPI= async({
-  name,
-  email,
-  message
-}) => {
-  console.log("called sendFeedback");
-  const res = await fetch(`${baseUrl}/api/dsa-sheets/send-feedback`,{
-    method:"POST",
-    headers:{
-      'Content-type':'application/json'
-    },
-    body:JSON.stringify({name,email,message})
-  })
-  const data = await res.json();
-  return data;
-}
