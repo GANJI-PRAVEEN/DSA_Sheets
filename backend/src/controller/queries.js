@@ -455,10 +455,11 @@ export const retrieveTopics = async (req, res) => {
 export const AssignProblemSolved = async (req, res) => {
   try {
     const { sheetId, userId, topicId, problemId, status } = req.body;
-    if (!userId || !topicId || !problemId || !status) {
-      res.status(500).json({
-        success: "false",
-        message: "provide required data to update progress",
+
+    if (!userId || !topicId || !problemId || !sheetId || !status) {
+      return res.status(400).json({
+        success: false,
+        message: "Provide all required data",
       });
     }
 
@@ -469,46 +470,47 @@ export const AssignProblemSolved = async (req, res) => {
       sheetId,
     };
 
-
-    const isExist = await progressModel.findOne({
-      userId: userId,
-      topicId: topicId,
-      problemId: problemId,
-      sheetId: sheetId,
-    });
-    if (status==='solved') {
+    // CASE 1: SOLVED → insert/update
+    if (status === "solved") {
       await progressModel.updateOne(
+        query,
         {
-          userId: userId,
-          topicId: topicId,
-          problemId: problemId,
-          sheetId: sheetId,
+          $set: {
+            userId,
+            topicId,
+            problemId,
+            sheetId,
+          },
         },
-        { $set: { status: status } },
+        { upsert: true } //  prevents duplicates
       );
+
       return res.status(200).json({
-        success:true,
-        message:"progress updated."
-      })
-    } else {
-      await progressModel.deleteOne({
-        userId:userId,
-        topicId: topicId,
-        problemId: problemId,
-        sheetId: sheetId,
+        success: true,
+        message: "Marked as solved",
       });
-      return res.status(200).json({
-        success:true,
-        message:"progress updated."
-      })
     }
 
-    res.status(200).json({
-      success: true,
-      message: "nvalid status found",
+    //CASE 2: UNSOLVED → delete
+    if (status === "unsolved") {
+      await progressModel.deleteOne(query);
+
+      return res.status(200).json({
+        success: true,
+        message: "Removed from solved",
+      });
+    }
+
+    // Invalid status
+    return res.status(400).json({
+      success: false,
+      message: "Invalid status value",
     });
+
   } catch (error) {
-    res.status(500).json({
+    console.error("❌ Error updating progress:", error);
+
+    return res.status(500).json({
       success: false,
       message: "Error updating progress",
       error: error.message,
