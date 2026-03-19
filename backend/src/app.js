@@ -6,7 +6,7 @@ import dsaSheetsRouter from './routes/dsaSheetsRouter.js';
 const app = express();
 
 app.use(cors({
-  origin: "https://dsasheets2.vercel.app",
+  origin: "https://dsa-sheets-final.onrender.com",
   methods: ["GET","POST","PUT","DELETE"],
   credentials: true
 }));
