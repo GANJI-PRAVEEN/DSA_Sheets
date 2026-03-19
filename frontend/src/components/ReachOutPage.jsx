@@ -64,6 +64,7 @@ const ReachOutPage = () => {
 
     }catch(err){
       setLoading(false);
+      console.log("❌ Frontend Error:", err);
       setStatus("Server error ❌")
     }
   }

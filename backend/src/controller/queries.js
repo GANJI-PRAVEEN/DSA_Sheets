@@ -10,6 +10,8 @@ import problemsModel from "../models/problems.model.js";
 import nodemailer from "nodemailer";
 import sheetsModel from "../models/sheets.model.js";
 import bcrypt from "bcryptjs";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const welcome = async (req, res) => {
   try {
