@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Navbar from './Navbar';
-import { sendFeedback } from '../../api/calls';
+import { sendFeedback, sendFeedbackAPI } from '../../api/calls';
 import { toast } from 'react-toastify';
 
 const ReachOutPage = () => {
@@ -42,7 +42,7 @@ const ReachOutPage = () => {
 
     try{
       setLoading(true);
-      const res = await sendFeedback({name:form.name,email:form.email,message:form.message});
+      const res = await sendFeedbackAPI({name:form.name,email:form.email,message:form.message});
 
       if(res.success){
         setLoading(false);

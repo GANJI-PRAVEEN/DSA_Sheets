@@ -121,11 +121,12 @@ export const fetchProblemsAPI = async({
 }
 
 
-export const sendFeedback = async({
+export const sendFeedbackAPI= async({
   name,
   email,
   message
 }) => {
+  console.log("called sendFeedback");
   const res = await fetch(`${baseUrl}/api/dsa-sheets/send-feedback`,{
     method:"POST",
     headers:{
