@@ -34,6 +34,7 @@ const StriversproblemsView = () => {
     (count, problem) => count + (isProblemSolved(problem) ? 1 : 0),
     0
   );
+  const totalProblemsInTopic = problems?.length || 0;
 
   useEffect(() => {
     console.log("sheeetDetails ", sheetDetails);
@@ -180,12 +181,13 @@ const StriversproblemsView = () => {
               <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-slate-900/70 shadow-md shadow-emerald-500/30">
                 <div className="absolute inset-[3px] rounded-full bg-gradient-to-tr from-emerald-500 via-lime-400 to-emerald-600" />
                 <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-slate-950 text-white text-xs font-medium">
-                  <span className="leading-tight text-center">
-                    <span className="block text-base font-semibold">
+                  <span className="flex w-11 flex-col items-center justify-center leading-none text-center">
+                    <span className="text-sm font-semibold text-emerald-300">
                       {solvedCount}
                     </span>
-                    <span className="block text-[9px] uppercase tracking-wide text-emerald-200">
-                      Solved
+                    <span className="my-0.5 block h-px w-full bg-slate-300/80" />
+                    <span className="text-sm font-semibold text-slate-200">
+                      {totalProblemsInTopic}
                     </span>
                   </span>
                 </div>
