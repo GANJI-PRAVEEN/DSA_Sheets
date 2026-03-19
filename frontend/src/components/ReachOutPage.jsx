@@ -14,11 +14,6 @@ const ReachOutPage = () => {
     'MongoDB','Firebase','REST API','Android Development'
   ];
 
-  const [form,setForm] = useState({
-    name:"",
-    email:"",
-    message:""
-  });
 
   const [status,setStatus] = useState("");
 
@@ -184,55 +179,8 @@ const ReachOutPage = () => {
 
               </div>
 
-              {/* FEEDBACK FORM */}
 
-              <h3 className="mt-10 text-lg font-semibold text-slate-900">
-                Send Feedback
-              </h3>
 
-              <form onSubmit={handleSubmit} className="mt-4 space-y-3">
-
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Your Name"
-                  value={form.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2"
-                />
-
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Your Email"
-                  value={form.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2"
-                />
-
-                <textarea
-                  name="message"
-                  placeholder="Your Feedback"
-                  value={form.message}
-                  onChange={handleChange}
-                  required
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2"
-                />
-
-                <button
-                  type="submit"
-                  className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                >
-                  {loading? 'Sending..':'Send Feedback'}
-                </button>
-
-                {status && (
-                  <p className="text-sm text-green-600">{status}</p>
-                )}
-
-              </form>
 
           </div>
         </section>
