@@ -15,7 +15,6 @@ dotenv.config();
 
 let feedbackTransporter;
 
-import nodemailer from "nodemailer";
 
 let transporter;
 
