@@ -13,6 +13,37 @@ import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 dotenv.config();
 
+let feedbackTransporter;
+
+import nodemailer from "nodemailer";
+
+let transporter;
+
+export const getFeedbackTransporter = () => {
+  if (transporter) return transporter;
+
+  transporter = nodemailer.createTransport({
+    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+
+    // 🔥 CRITICAL FIX (IPv6 issue)
+    family: 4,
+
+    // ⏱ Prevent long waiting (Render issue)
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 10000,
+
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_PASS,
+    },
+  });
+
+  return transporter;
+};
 export const welcome = async (req, res) => {
   try {
     return res.status(200).json({
@@ -555,16 +586,10 @@ export const sendFeedback = async (req, res) => {
       });
     }
 
-    // Create transporter
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS,
-      },
-    });
+    // ✅ UPDATED transporter (IPv4 + timeout fix)
+    const transporter = getFeedbackTransporter();
 
-    console.log("⚙️ Transporter created");
+    console.log("⚙️ Transporter ready");
 
     // Email options
     const mailOptions = {
@@ -616,9 +641,13 @@ export const sendFeedback = async (req, res) => {
 
     console.log("📤 Sending email...");
 
+    const sendStartedAt = Date.now();
+
     const info = await transporter.sendMail(mailOptions);
 
-    console.log("✅ Email sent:", info.response);
+    const sendDurationMs = Date.now() - sendStartedAt;
+
+    console.log(`✅ Email sent in ${sendDurationMs}ms:`, info.response);
 
     return res.status(200).json({
       success: true,
@@ -628,7 +657,11 @@ export const sendFeedback = async (req, res) => {
 
   } catch (error) {
 
-    console.error("❌ Error sending feedback:", error);
+    console.error("❌ Error sending feedback FULL:", {
+      message: error.message,
+      stack: error.stack,
+      code: error.code,
+    });
 
     return res.status(500).json({
       success: false,
@@ -637,3 +670,99 @@ export const sendFeedback = async (req, res) => {
     });
   }
 };
+
+// export const sendFeedback = async (req, res) => {
+//   console.log("🔔 sendFeedback called");
+
+//   try {
+//     const { name, email, message } = req.body;
+
+//     console.log("📧 Received feedback:", { name, email });
+
+//     // Validation
+//     if (!name || !email || !message) {
+//       console.log("❌ Missing required fields");
+//       return res.status(400).json({
+//         success: false,
+//         message: "Please provide name, email and message",
+//       });
+//     }
+
+//     // Reuse transporter to avoid SMTP handshake/auth overhead on each request
+//     const transporter = getFeedbackTransporter();
+
+//     console.log("⚙️ Transporter created");
+
+//     // Email options
+//     const mailOptions = {
+//       from: `"Website Feedback" <${process.env.GMAIL_USER}>`,
+//       to: process.env.GMAIL_USER,
+//       replyTo: email,
+//       subject: "📩 New Feedback Received",
+
+//       html: `
+//       <div style="font-family:Arial,sans-serif;background:#f6f8fa;padding:20px;">
+        
+//         <div style="max-width:600px;margin:auto;background:white;padding:25px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+
+//           <h2 style="color:#2563eb;">New Feedback Received</h2>
+
+//           <p style="color:#555;">
+//             A user submitted feedback from your website.
+//           </p>
+
+//           <hr style="margin:20px 0;border:none;border-top:1px solid #eee;" />
+
+//           <p><strong>Name:</strong> ${name}</p>
+//           <p><strong>Email:</strong> ${email}</p>
+//           <p><strong>Submitted At:</strong> ${new Date().toLocaleString()}</p>
+
+//           <p style="margin-top:15px;"><strong>Message:</strong></p>
+
+//           <div style="
+//             background:#f1f5f9;
+//             padding:15px;
+//             border-radius:8px;
+//             border-left:4px solid #2563eb;
+//             margin-top:10px;
+//           ">
+//             ${message}
+//           </div>
+
+//           <hr style="margin:20px 0;border:none;border-top:1px solid #eee;" />
+
+//           <p style="font-size:12px;color:#777;">
+//             Sent from Ganji Praveen Website Feedback Form
+//           </p>
+
+//         </div>
+
+//       </div>
+//       `,
+//     };
+
+//     console.log("📤 Sending email...");
+
+//     const sendStartedAt = Date.now();
+//     const info = await transporter.sendMail(mailOptions);
+//     const sendDurationMs = Date.now() - sendStartedAt;
+
+//     console.log(`✅ Email sent in ${sendDurationMs}ms:`, info.response);
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Feedback sent successfully",
+//       messageId: info.messageId,
+//     });
+
+//   } catch (error) {
+
+//     console.error("❌ Error sending feedback:", error);
+
+//     return res.status(500).json({
+//       success: false,
+//       message: "Failed to send feedback",
+//       error: error.message,
+//     });
+//   }
+// };
