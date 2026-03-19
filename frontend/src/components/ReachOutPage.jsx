@@ -42,7 +42,7 @@ const ReachOutPage = () => {
 
     try{
       setLoading(true);
-      const res = await sendFeedback(form.name,form.email,form.message);
+      const res = await sendFeedback({name:form.name,email:form.email,message:form.message});
 
       if(res.success){
         setLoading(false);
