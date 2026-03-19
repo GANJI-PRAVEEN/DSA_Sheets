@@ -536,25 +536,33 @@ export const retrieveTopicWiseSolvedProblems = async (req, res) => {
 };
 
 export const sendFeedback = async (req, res) => {
+  console.log("🔔 sendFeedback called");
   try {
     const { name, email, message } = req.body;
+    console.log("📧 Received feedback from:", { name, email });
 
     if (!name || !email || !message) {
+      console.log("❌ Missing fields");
       return res.status(400).json({
         success: false,
         message: "Please provide all required fields",
+        error: "Missing name, email or message",
       });
     }
 
+    console.log("⚙️ Creating transporter...");
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
         user: process.env.GMAIL_USER || "ganjipraveen444@gmail.com",
         pass: process.env.GMAIL_PASS || "sivswpvgahbtimjr",
       },
-      connectionTimeout: 5000,
-      socketTimeout: 5000,
+      connectionUrl: "smtp://gmail.com",
+      connectionTimeout: 10000,
+      socketTimeout: 10000,
     });
+
+    console.log("✅ Transporter created");
 
     const mailOptions = {
       from: process.env.GMAIL_USER || "ganjipraveen444@gmail.com",
@@ -580,19 +588,30 @@ export const sendFeedback = async (req, res) => {
       `,
     };
 
-    await transporter.sendMail(mailOptions);
+    console.log("📤 Sending email...");
+    const info = await transporter.sendMail(mailOptions);
+    console.log("✅ Email sent successfully:", info.response);
+
     await transporter.close();
+    console.log("🔌 Connection closed");
 
     return res.status(200).json({
       success: true,
       message: "Feedback sent successfully",
+      info: info.messageId,
     });
   } catch (error) {
-    console.error("Error sending feedback email:", error);
+    console.error("❌ Error in sendFeedback:", {
+      message: error.message,
+      code: error.code,
+      command: error.command,
+      stack: error.stack,
+    });
     return res.status(500).json({
       success: false,
       message: "Failed to send feedback. Please try again later.",
       error: error.message,
+      errorCode: error.code,
     });
   }
 };
