@@ -462,13 +462,21 @@ export const AssignProblemSolved = async (req, res) => {
       });
     }
 
+    const query = {
+      userId,
+      topicId,
+      problemId,
+      sheetId,
+    };
+
+
     const isExist = await progressModel.findOne({
       userId: userId,
       topicId: topicId,
       problemId: problemId,
       sheetId: sheetId,
     });
-    if (isExist) {
+    if (status==='solved') {
       await progressModel.updateOne(
         {
           userId: userId,
@@ -478,19 +486,26 @@ export const AssignProblemSolved = async (req, res) => {
         },
         { $set: { status: status } },
       );
+      return res.status(200).json({
+        success:true,
+        message:"progress updated."
+      })
     } else {
-      await progressModel.create({
-        userId: userId,
-        problemId: problemId,
+      await progressModel.deleteOne({
+        userId:userId,
         topicId: topicId,
+        problemId: problemId,
         sheetId: sheetId,
-        status: status,
       });
+      return res.status(200).json({
+        success:true,
+        message:"progress updated."
+      })
     }
 
     res.status(200).json({
       success: true,
-      message: "Progress updated",
+      message: "nvalid status found",
     });
   } catch (error) {
     res.status(500).json({
