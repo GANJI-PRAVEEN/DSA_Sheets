@@ -16,6 +16,25 @@ const StriversproblemsView = () => {
 
   const user = JSON.parse(sessionStorage.getItem("user"));
 
+  const solvedProblemIdSet = new Set(
+    (solvedProblems || []).map((progress) => String(progress.problemId))
+  );
+
+  const isProblemSolved = (problem) => {
+    const mongoProblemId = String(problem?._id || "");
+    const legacyProblemId = String(problem?.problemId || "");
+
+    return (
+      solvedProblemIdSet.has(mongoProblemId) ||
+      (legacyProblemId && solvedProblemIdSet.has(legacyProblemId))
+    );
+  };
+
+  const solvedCount = (problems || []).reduce(
+    (count, problem) => count + (isProblemSolved(problem) ? 1 : 0),
+    0
+  );
+
   useEffect(() => {
     console.log("sheeetDetails ", sheetDetails);
     
@@ -82,13 +101,22 @@ const StriversproblemsView = () => {
     loadAllData();
   }, [sheetId, topicId]);
 
-  const handleCheckBoxChange = async (problemId) => {
-    const isSolved = solvedProblems.some(p => p.problemId === problemId);
+  const handleCheckBoxChange = async (problem) => {
+    const mongoProblemId = String(problem?._id || "");
+    const legacyProblemId = String(problem?.problemId || "");
+    const problemIdForApi = mongoProblemId || legacyProblemId;
+
+    if (!problemIdForApi) {
+      toast.error("Invalid problem id");
+      return;
+    }
+
+    const isSolved = isProblemSolved(problem);
 
     const status = isSolved ? 'unsolved' : 'solved';
 
     try {
-      const res = await assignUpdateProblemStatusAPI({ sheetId:sheetId,userId: user?._id, topicId: topicId, problemId: problemId, status: status });
+      const res = await assignUpdateProblemStatusAPI({ sheetId:sheetId,userId: user?._id, topicId: topicId, problemId: problemIdForApi, status: status });
       if (!res.success) {
         console.log("error", res.error);
         toast.error(res.message || "Failed to update status");
@@ -98,10 +126,18 @@ const StriversproblemsView = () => {
       toast.success(res.message);
 
       if (isSolved) {
-        setSolvedProblems(prev => prev.filter(p => p.problemId !== problemId));
+        setSolvedProblems(prev =>
+          prev.filter((p) => {
+            const currentProblemId = String(p.problemId || "");
+            return (
+              currentProblemId !== mongoProblemId &&
+              currentProblemId !== legacyProblemId
+            );
+          })
+        );
       }
       else {
-        setSolvedProblems(prev => [...prev, { topicId: topicId, status: "solved", problemId: problemId, userId: user?._id, sheetId: sheetId }]);
+        setSolvedProblems(prev => [...prev, { topicId: topicId, status: "solved", problemId: problemIdForApi, userId: user?._id, sheetId: sheetId }]);
       }
     } catch (error) {
       console.log("error", error);
@@ -146,7 +182,7 @@ const StriversproblemsView = () => {
                 <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-slate-950 text-white text-xs font-medium">
                   <span className="leading-tight text-center">
                     <span className="block text-base font-semibold">
-                      {solvedProblems.length}
+                      {solvedCount}
                     </span>
                     <span className="block text-[9px] uppercase tracking-wide text-emerald-200">
                       Solved
@@ -186,7 +222,7 @@ const StriversproblemsView = () => {
               </thead>
               <tbody className="text-sm">
                 {problems?.map((problem, index) => (
-                  <tr key={index} className={`${solvedProblems?.some(p => p.problemId === problem._id) ? 'bg-green-600/40' : ''} border-b-2 border-slate-200 transition-colors`}>
+                  <tr key={index} className={`${isProblemSolved(problem) ? 'bg-green-600/40' : ''} border-b-2 border-slate-200 transition-colors`}>
                     <td className="px-4 py-3 text-left text-[13px] font-medium text-slate-700 border-r-2 border-slate-200">
                       {index + 1}
                     </td>
@@ -240,11 +276,9 @@ const StriversproblemsView = () => {
                     </td>
                     <td className="px-6 py-3 text-left text-[18px] font-medium text-slate-700 border-r-2 border-slate-300">
                       <input
-                        checked={solvedProblems?.some(
-                          (p) => p.problemId === problem._id
-                        )}
+                        checked={isProblemSolved(problem)}
                         type="checkbox"
-                        onChange={() => handleCheckBoxChange(problem._id)}
+                        onChange={() => handleCheckBoxChange(problem)}
                       />
                     </td>
                   </tr>

@@ -480,7 +480,7 @@ export const AssignProblemSolved = async (req, res) => {
             topicId,
             problemId,
             sheetId,
-            status: "solved",
+            status
           },
         },
         { upsert: true } //  prevents duplicates
@@ -537,7 +537,7 @@ export const retrieveUserProgress = async (req, res) => {
       sheetId: sheetId,
       topicId: topicId,
       userId: userId,
-      status: "solved",
+      $or: [{ status: "solved" }, { status: { $exists: false } }],
     });
 
     return res.status(200).json({
@@ -561,7 +561,7 @@ export const retrieveTopicWiseSolvedProblems = async (req, res) => {
     const topicSolved = await progressModel.find({
       userId: userId,
       sheetId: sheetId,
-      status: "solved",
+      $or: [{ status: "solved" }, { status: { $exists: false } }],
     });
     const topicWiseProblems = {};
     topicSolved.forEach((p) => {
