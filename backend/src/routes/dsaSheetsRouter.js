@@ -8,6 +8,7 @@ import { welcome ,createUser,userLoginCheck, getProfile,retrieveTopics,AssignPro
     insertLoveBabbarSheet,
     insertApnaCollegeSheet,
     fetchProblems,
+    sendFeedback
 
 } from "../controller/queries.js";
 
@@ -36,5 +37,6 @@ router.route('/insertSheets').get(insertSheets);
 router.route('/insert-love-babbar-sheet').get(insertLoveBabbarSheet);
 router.route('/insert-apna-college-sheet').get(insertApnaCollegeSheet);
 router.route('/fetch-problems').post(fetchProblems);
+router.route('/send-feedback').post(sendFeedback);
 
 export default router;

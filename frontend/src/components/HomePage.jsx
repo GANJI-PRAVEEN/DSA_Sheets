@@ -37,7 +37,7 @@ const HomePage = () => {
     };
     
     fetchSheets();
-  }, [!user]);
+  }, [user]);
 
   const openSheet = (sheetId, sheet) => {
     navigate("/sheet-topics", { state: { sheetId: sheetId, sheetDetails: sheet } });

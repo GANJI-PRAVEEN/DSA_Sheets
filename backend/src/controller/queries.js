@@ -4,9 +4,10 @@ import progressModel from "../models/progress.model.js";
 import sheetModel from "../models/sheets.model.js";
 import mongoose, { set } from "mongoose";
 import striverSheetData from "../data/convertedStriverSheet.json" with { type: "json" };
-import loveBabbarSheet from '../data/loveBabbarConverted.json' with { type: "json" };
-import apnaCollegeSheet from '../data/apnaCollegeConverted.json' with { type: "json" };
+import loveBabbarSheet from "../data/loveBabbarConverted.json" with { type: "json" };
+import apnaCollegeSheet from "../data/apnaCollegeConverted.json" with { type: "json" };
 import problemsModel from "../models/problems.model.js";
+import nodemailer from "nodemailer";
 import sheetsModel from "../models/sheets.model.js";
 import bcrypt from "bcryptjs";
 
@@ -27,24 +28,26 @@ export const welcome = async (req, res) => {
 
 export const insertSheets = async (req, res) => {
   try {
-
     const sheets = await sheetModel.insertMany([
       {
         sheetName: "Striver A2Z DSA Sheet",
         author: "Striver",
-        sheetDesc:"It systematically covers key DSA topics (arrays, graphs, DP, trees, etc.) with increasing difficulty to help build strong problem-solving skills for coding interviews.",
+        sheetDesc:
+          "It systematically covers key DSA topics (arrays, graphs, DP, trees, etc.) with increasing difficulty to help build strong problem-solving skills for coding interviews.",
         totalQuestions: 415,
       },
       {
         sheetName: "Love Babbar DSA Grinded Sheet",
         author: "Love Babbar",
-        sheetDesc:"It covers core topics like arrays, strings, trees, graphs, DP, and helps build strong interview preparation step-by-step.",
+        sheetDesc:
+          "It covers core topics like arrays, strings, trees, graphs, DP, and helps build strong interview preparation step-by-step.",
         totalQuestions: 450,
       },
       {
         sheetName: "Apna College Formatted Sheet",
         author: "Apna College",
-        sheetDesc:"It focuses on commonly asked coding interview questions and systematic topic-wise practice.",
+        sheetDesc:
+          "It focuses on commonly asked coding interview questions and systematic topic-wise practice.",
         totalQuestions: 375,
       },
     ]);
@@ -55,24 +58,24 @@ export const insertSheets = async (req, res) => {
     console.log("SheetId", Id);
 
     // INSERT STRIVER TOPICS
-    const topics = striverSheetData.topics.map(topic => ({
+    const topics = striverSheetData.topics.map((topic) => ({
       topicId: topic.topicId,
       topicName: topic.topicName,
       position: topic.position,
-      sheetId: Id
+      sheetId: Id,
     }));
 
     await topicsModel.insertMany(topics);
     console.log("Striver topics pushed into MongoDB");
 
     // INSERT STRIVER PROBLEMS
-    const problems = striverSheetData.problems.map(problem => ({
+    const problems = striverSheetData.problems.map((problem) => ({
       problemId: problem.problemId,
       topicId: problem.topicId,
       problemName: problem.problemName,
       difficulty: problem.difficulty,
       links: problem.links,
-      sheetId: Id
+      sheetId: Id,
     }));
 
     await problemsModel.insertMany(problems);
@@ -81,108 +84,97 @@ export const insertSheets = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Sheets Inserted Successfully",
-      sheets
+      sheets,
     });
-
   } catch (error) {
-
     console.log(error);
 
     return res.status(400).json({
       success: false,
       message: "Failed to insert sheets",
-      error
+      error,
     });
-
   }
 };
 
-export const insertLoveBabbarSheet = async(req,res) => {
+export const insertLoveBabbarSheet = async (req, res) => {
   try {
-
-    //INSERT LOVEBABBAR TOPICS 
-    const topics = loveBabbarSheet.topics.map(topic =>({
-      topicId:topic.topicId,
-      topicName:topic.topicName,
-      position:topic.position,
-      sheetId: new mongoose.Types.ObjectId("69b692e339a157405d7d5ae3")  //LOVE BABBAR SHEET
+    //INSERT LOVEBABBAR TOPICS
+    const topics = loveBabbarSheet.topics.map((topic) => ({
+      topicId: topic.topicId,
+      topicName: topic.topicName,
+      position: topic.position,
+      sheetId: new mongoose.Types.ObjectId("69b692e339a157405d7d5ae3"), //LOVE BABBAR SHEET
     }));
     await topicsModel.insertMany(topics);
     console.log("inserted love babbar topics");
 
-
     //INSERT LOVEBABBAR PROBLEMS
-    const problems = loveBabbarSheet.problems.map(problem => ({
+    const problems = loveBabbarSheet.problems.map((problem) => ({
       problemId: problem.problemId,
       topicId: problem.topicId,
       problemName: problem.problemName,
       difficulty: problem.difficulty,
       links: problem.links,
-      sheetId: new mongoose.Types.ObjectId("69b692e339a157405d7d5ae3")  //LOVE BABBAR SHEET
+      sheetId: new mongoose.Types.ObjectId("69b692e339a157405d7d5ae3"), //LOVE BABBAR SHEET
     }));
     await problemsModel.insertMany(problems);
     console.log("inserted love babbars problems");
 
-
     return res.status(200).json({
-        success: true,
-        message: "Love babbar Sheet Inserted Successfully",
-      });
-    
+      success: true,
+      message: "Love babbar Sheet Inserted Successfully",
+    });
   } catch (error) {
     return res.status(400).json({
       success: false,
       message: "Failed to insert loev babbar sheet",
-      error
+      error,
     });
   }
-
-}
-export const insertApnaCollegeSheet = async(req,res) => {
+};
+export const insertApnaCollegeSheet = async (req, res) => {
   try {
-
-    //INSERT LOVEBABBAR TOPICS 
-    const topics = apnaCollegeSheet.topics.map(topic =>({
-      topicId:topic.topicId,
-      topicName:topic.topicName,
-      position:topic.position,
-      sheetId: new mongoose.Types.ObjectId("69b692e339a157405d7d5ae4")  //APNA COLLEGE SHEET
+    //INSERT LOVEBABBAR TOPICS
+    const topics = apnaCollegeSheet.topics.map((topic) => ({
+      topicId: topic.topicId,
+      topicName: topic.topicName,
+      position: topic.position,
+      sheetId: new mongoose.Types.ObjectId("69b692e339a157405d7d5ae4"), //APNA COLLEGE SHEET
     }));
     await topicsModel.insertMany(topics);
     console.log("inserted apna college topics");
 
-
     //INSERT LOVEBABBAR PROBLEMS
-    const problems = apnaCollegeSheet.problems.map(problem => ({
+    const problems = apnaCollegeSheet.problems.map((problem) => ({
       problemId: problem.problemId,
       topicId: problem.topicId,
       problemName: problem.problemName,
       difficulty: problem.difficulty,
       links: problem.links,
-      sheetId: new mongoose.Types.ObjectId("69b692e339a157405d7d5ae4")  //APNA COLLEGE SHEET
+      sheetId: new mongoose.Types.ObjectId("69b692e339a157405d7d5ae4"), //APNA COLLEGE SHEET
     }));
     await problemsModel.insertMany(problems);
     console.log("inserted apna college problems");
 
-
     return res.status(200).json({
-        success: true,
-        message: "Apna College Sheet Inserted Successfully",
-      });
-    
+      success: true,
+      message: "Apna College Sheet Inserted Successfully",
+    });
   } catch (error) {
     return res.status(400).json({
       success: false,
       message: "Failed to insert Apna College sheet",
-      error
+      error,
     });
   }
-
-}
+};
 export const userLoginCheck = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const normalizedEmail = String(email || "").trim().toLowerCase();
+    const normalizedEmail = String(email || "")
+      .trim()
+      .toLowerCase();
     const normalizedPassword = String(password || "").trim();
 
     if (!normalizedEmail || !normalizedPassword) {
@@ -201,11 +193,16 @@ export const userLoginCheck = async (req, res) => {
       });
     }
 
-    const isHashedPassword = /^\$2[aby]\$\d{2}\$.{53}$/.test(existUser.Password || "");
+    const isHashedPassword = /^\$2[aby]\$\d{2}\$.{53}$/.test(
+      existUser.Password || "",
+    );
     let isPasswordValid = false;
 
     if (isHashedPassword) {
-      isPasswordValid = await bcrypt.compare(normalizedPassword, existUser.Password);
+      isPasswordValid = await bcrypt.compare(
+        normalizedPassword,
+        existUser.Password,
+      );
     } else {
       isPasswordValid = existUser.Password === normalizedPassword;
       if (isPasswordValid) {
@@ -263,7 +260,9 @@ export const createUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     const normalizedName = String(name || "").trim();
-    const normalizedEmail = String(email || "").trim().toLowerCase();
+    const normalizedEmail = String(email || "")
+      .trim()
+      .toLowerCase();
     const normalizedPassword = String(password || "").trim();
 
     if (!normalizedName || !normalizedEmail || !normalizedPassword) {
@@ -346,63 +345,65 @@ export const getProfile = async (req, res) => {
   }
 };
 
-export const fetchSheets = async(req,res) => {
+export const fetchSheets = async (req, res) => {
   try {
     const sheets = await sheetsModel.find();
     return res.status(200).json({
-      success:true,
-      message:"fetched sheets",
-      sheets
-    })
+      success: true,
+      message: "fetched sheets",
+      sheets,
+    });
   } catch (error) {
-    console.log("fetching sheets failed",error.message);
+    console.log("fetching sheets failed", error.message);
     return res.status(400).json({
-      success:false,
-      message:"fetching sheets failed"
-    })
+      success: false,
+      message: "fetching sheets failed",
+    });
   }
-}
+};
 
-export const fetchProblems = async(req,res) => {
+export const fetchProblems = async (req, res) => {
   try {
-    const {topicId,sheetId} = req.body;
-    console.log("topicId received ",topicId);
-    console.log("sheetID received ",sheetId);
-    const problems  = await problemsModel.find({
-      sheetId:sheetId,
-      topicId:topicId,
-    })
+    const { topicId, sheetId } = req.body;
+    console.log("topicId received ", topicId);
+    console.log("sheetID received ", sheetId);
+    const problems = await problemsModel.find({
+      sheetId: sheetId,
+      topicId: topicId,
+    });
     return res.status(200).json({
-      success:true,
-      message:"problem fetched successfully",
-      problems
-    })
+      success: true,
+      message: "problem fetched successfully",
+      problems,
+    });
   } catch (error) {
-    console.log("failed to retrieve problems",error.message);
+    console.log("failed to retrieve problems", error.message);
     return res.status(400).json({
-      success:false,
-      message:"failed to retrieve problems",
-      error
-    })
+      success: false,
+      message: "failed to retrieve problems",
+      error,
+    });
   }
-}
+};
 export const retrieveTopics = async (req, res) => {
   try {
-    const {sheetId} = req.body;
-    console.log("sheetID in backend",sheetId)
-    const topics = await topicsModel.find({sheetId});
+    const { sheetId } = req.body;
+    console.log("sheetID in backend", sheetId);
+    const topics = await topicsModel.find({ sheetId });
 
     // Count problems per topicId for this sheet
     const problemCounts = await problemsModel.aggregate([
       { $match: { sheetId: new mongoose.Types.ObjectId(sheetId) } },
-      { $group: { _id: "$topicId", count: { $sum: 1 } } }
+      { $group: { _id: "$topicId", count: { $sum: 1 } } },
     ]);
     const countMap = {};
-    problemCounts.forEach(({ _id, count }) => { countMap[_id] = count; });
+    problemCounts.forEach(({ _id, count }) => {
+      countMap[_id] = count;
+    });
 
-    const topicsWithCount = topics.map(topic => ({
+    const topicsWithCount = topics.map((topic) => ({
       ...topic.toObject(),
-      totalProblems: countMap[topic.topicId] ?? 0
+      totalProblems: countMap[topic.topicId] ?? 0,
     }));
 
     return res.status(200).json({
@@ -419,10 +420,9 @@ export const retrieveTopics = async (req, res) => {
   }
 };
 
-
 export const AssignProblemSolved = async (req, res) => {
   try {
-    const { sheetId,userId, topicId, problemId, status } = req.body;
+    const { sheetId, userId, topicId, problemId, status } = req.body;
     if (!userId || !topicId || !problemId || !status) {
       res.status(500).json({
         success: "false",
@@ -434,7 +434,7 @@ export const AssignProblemSolved = async (req, res) => {
       userId: userId,
       topicId: topicId,
       problemId: problemId,
-      sheetId:sheetId
+      sheetId: sheetId,
     });
     if (isExist) {
       await progressModel.updateOne(
@@ -442,7 +442,7 @@ export const AssignProblemSolved = async (req, res) => {
           userId: userId,
           topicId: topicId,
           problemId: problemId,
-          sheetId:sheetId
+          sheetId: sheetId,
         },
         { $set: { status: status } },
       );
@@ -451,7 +451,7 @@ export const AssignProblemSolved = async (req, res) => {
         userId: userId,
         problemId: problemId,
         topicId: topicId,
-        sheetId:sheetId,
+        sheetId: sheetId,
         status: status,
       });
     }
@@ -468,9 +468,6 @@ export const AssignProblemSolved = async (req, res) => {
     });
   }
 };
-
-
-
 
 export const retrieveUserProgress = async (req, res) => {
   //based on the topicId retrieve all problemsId which are solved
@@ -508,12 +505,12 @@ export const retrieveUserProgress = async (req, res) => {
 };
 
 export const retrieveTopicWiseSolvedProblems = async (req, res) => {
-  const { sheetId,userId } = req.body;
+  const { sheetId, userId } = req.body;
 
   try {
     const topicSolved = await progressModel.find({
       userId: userId,
-      sheetId:sheetId,
+      sheetId: sheetId,
       status: "solved",
     });
     const topicWiseProblems = {};
@@ -533,6 +530,83 @@ export const retrieveTopicWiseSolvedProblems = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Error retrieving progress",
+      error: error.message,
+    });
+  }
+};
+
+export const sendFeedback = async (req, res) => {
+  try {
+    const { name, email, message } = req.body;
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "ganjipraveen444@gmail.com",
+        pass: "sivswpvgahbtimjr",
+      },
+    });
+
+await transporter.sendMail({
+  from: "ganjipraveen444@gmail.com",
+  to: "ganjipraveen444@gmail.com",
+  replyTo: email,
+  subject: "📩 New Feedback Received",
+
+  html: `
+  <div style="font-family: Arial, sans-serif; background:#f6f8fa; padding:20px;">
+    
+    <div style="max-width:600px; margin:auto; background:white; padding:25px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+
+      <h2 style="color:#2563eb; margin-bottom:10px;">
+        New Feedback Received
+      </h2>
+
+      <p style="color:#555;">
+        A user has submitted feedback from your website.
+      </p>
+
+      <hr style="border:none; border-top:1px solid #eee; margin:20px 0;"/>
+
+      <p><strong>Name:</strong> ${name}</p>
+
+      <p><strong>Email:</strong> ${email}</p>
+
+      <p><strong>Message:</strong></p>
+
+      <div style="
+        background:#f1f5f9;
+        padding:15px;
+        border-radius:8px;
+        border-left:4px solid #2563eb;
+        margin-top:10px;
+      ">
+        ${message}
+      </div>
+
+      <hr style="border:none; border-top:1px solid #eee; margin:20px 0;"/>
+
+      <p style="font-size:12px; color:#777;">
+        This message was sent from your website feedback form.
+      </p>
+
+      <p style="font-size:12px; color:#777;">
+        Ganji Praveen Website
+      </p>
+
+    </div>
+
+  </div>
+  `
+});
+    return res.status(200).json({
+      success:true,
+      message:"feedback sent successfully"
+    })
+  } catch (error) {
+     return res.status(500).json({
+      success: false,
+      message: "failed to send feedback try again..",
       error: error.message,
     });
   }
