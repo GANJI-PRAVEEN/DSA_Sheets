@@ -539,74 +539,59 @@ export const sendFeedback = async (req, res) => {
   try {
     const { name, email, message } = req.body;
 
+    if (!name || !email || !message) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide all required fields",
+      });
+    }
+
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "ganjipraveen444@gmail.com",
-        pass: "sivswpvgahbtimjr",
+        user: process.env.GMAIL_USER || "ganjipraveen444@gmail.com",
+        pass: process.env.GMAIL_PASS || "sivswpvgahbtimjr",
       },
+      connectionTimeout: 5000,
+      socketTimeout: 5000,
     });
 
-await transporter.sendMail({
-  from: "ganjipraveen444@gmail.com",
-  to: "ganjipraveen444@gmail.com",
-  replyTo: email,
-  subject: "📩 New Feedback Received",
-
-  html: `
-  <div style="font-family: Arial, sans-serif; background:#f6f8fa; padding:20px;">
-    
-    <div style="max-width:600px; margin:auto; background:white; padding:25px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-
-      <h2 style="color:#2563eb; margin-bottom:10px;">
-        New Feedback Received
-      </h2>
-
-      <p style="color:#555;">
-        A user has submitted feedback from your website.
-      </p>
-
-      <hr style="border:none; border-top:1px solid #eee; margin:20px 0;"/>
-
-      <p><strong>Name:</strong> ${name}</p>
-
-      <p><strong>Email:</strong> ${email}</p>
-
-      <p><strong>Message:</strong></p>
-
-      <div style="
-        background:#f1f5f9;
-        padding:15px;
-        border-radius:8px;
-        border-left:4px solid #2563eb;
-        margin-top:10px;
-      ">
-        ${message}
+    const mailOptions = {
+      from: process.env.GMAIL_USER || "ganjipraveen444@gmail.com",
+      to: process.env.GMAIL_USER || "ganjipraveen444@gmail.com",
+      replyTo: email,
+      subject: "📩 New Feedback Received",
+      html: `
+      <div style="font-family: Arial, sans-serif; background:#f6f8fa; padding:20px;">
+        <div style="max-width:600px; margin:auto; background:white; padding:25px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+          <h2 style="color:#2563eb; margin-bottom:10px;">New Feedback Received</h2>
+          <p style="color:#555;">A user has submitted feedback from your website.</p>
+          <hr style="border:none; border-top:1px solid #eee; margin:20px 0;"/>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Message:</strong></p>
+          <div style="background:#f1f5f9; padding:15px; border-radius:8px; border-left:4px solid #2563eb; margin-top:10px;">
+            ${message}
+          </div>
+          <hr style="border:none; border-top:1px solid #eee; margin:20px 0;"/>
+          <p style="font-size:12px; color:#777;">This message was sent from your website feedback form.</p>
+        </div>
       </div>
+      `,
+    };
 
-      <hr style="border:none; border-top:1px solid #eee; margin:20px 0;"/>
+    await transporter.sendMail(mailOptions);
+    await transporter.close();
 
-      <p style="font-size:12px; color:#777;">
-        This message was sent from your website feedback form.
-      </p>
-
-      <p style="font-size:12px; color:#777;">
-        Ganji Praveen Website
-      </p>
-
-    </div>
-
-  </div>
-  `
-});
     return res.status(200).json({
-      success:true,
-      message:"feedback sent successfully"
-    })
+      success: true,
+      message: "Feedback sent successfully",
+    });
   } catch (error) {
-     return res.status(500).json({
+    console.error("Error sending feedback email:", error);
+    return res.status(500).json({
       success: false,
-      message: "failed to send feedback try again..",
+      message: "Failed to send feedback. Please try again later.",
       error: error.message,
     });
   }
