@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import Navbar from './Navbar';
 import { sendFeedback } from '../../api/calls';
+import { toast } from 'react-toastify';
 
 const ReachOutPage = () => {
 
   const email = 'ganjipraveen444@gmail.com';
+
+  const [loading,setLoading] = useState(false);
 
   const skills = [
     'C++','Java','Python','React','Express','Node.js',
@@ -38,10 +41,12 @@ const ReachOutPage = () => {
     e.preventDefault();
 
     try{
-
+      setLoading(true);
       const res = await sendFeedback(form.name,form.email,form.message);
 
       if(res.success){
+        setLoading(false);
+        toast.success(res.message);
         setStatus("Feedback sent successfully ✅")
 
         setForm({
@@ -51,10 +56,13 @@ const ReachOutPage = () => {
         })
       }
       else{
+        setLoading(false);
+        toast.error(res.message);
         setStatus("Something went wrong ❌")
       }
 
     }catch(err){
+      setLoading(false);
       setStatus("Server error ❌")
     }
   }
@@ -214,7 +222,7 @@ const ReachOutPage = () => {
                   type="submit"
                   className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
                 >
-                  Send Feedback
+                  {loading? 'Sending..':'Send Feedback'}
                 </button>
 
                 {status && (
