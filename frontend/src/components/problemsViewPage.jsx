@@ -87,18 +87,25 @@ const StriversproblemsView = () => {
 
     const status = isSolved ? 'unsolved' : 'solved';
 
-    const res = await assignUpdateProblemStatusAPI({ sheetId:sheetId,userId: user?._id, topicId: topicId, problemId: problemId, status: status });
-    if (res.success) {
+    try {
+      const res = await assignUpdateProblemStatusAPI({ sheetId:sheetId,userId: user?._id, topicId: topicId, problemId: problemId, status: status });
+      if (!res.success) {
+        console.log("error", res.error);
+        toast.error(res.message || "Failed to update status");
+        return;
+      }
+
       toast.success(res.message);
-    }
-    else {
-      console.log("error", res.error)
-    }
-    if (isSolved) {
-      setSolvedProblems(prev => prev.filter(p => p.problemId !== problemId));
-    }
-    else {
-      setSolvedProblems(prev => [...prev, { topicId: topicId, status: status, problemId: problemId, userId: user?._id }]);
+
+      if (isSolved) {
+        setSolvedProblems(prev => prev.filter(p => p.problemId !== problemId));
+      }
+      else {
+        setSolvedProblems(prev => [...prev, { topicId: topicId, status: "solved", problemId: problemId, userId: user?._id, sheetId: sheetId }]);
+      }
+    } catch (error) {
+      console.log("error", error);
+      toast.error("Failed to update status");
     }
 
   }
@@ -139,7 +146,7 @@ const StriversproblemsView = () => {
                 <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-slate-950 text-white text-xs font-medium">
                   <span className="leading-tight text-center">
                     <span className="block text-base font-semibold">
-                      {solvedProblems.filter(p => p.status === "solved").length}
+                      {solvedProblems.length}
                     </span>
                     <span className="block text-[9px] uppercase tracking-wide text-emerald-200">
                       Solved

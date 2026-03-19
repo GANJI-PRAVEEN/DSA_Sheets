@@ -480,6 +480,7 @@ export const AssignProblemSolved = async (req, res) => {
             topicId,
             problemId,
             sheetId,
+            status: "solved",
           },
         },
         { upsert: true } //  prevents duplicates
