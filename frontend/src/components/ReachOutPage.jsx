@@ -56,9 +56,9 @@ const ReachOutPage = () => {
 
               <p className="mt-3 max-w-2xl text-slate-600">
                 I am a Ganji Praveen, a Student. I focus on building full stack
-                applications to solve basic needs for people. I am enthusiastic
+                applications to solve real world problems. I am enthusiastic
                 about learning new technologies and currently exploring AI
-                technologies.
+                technologies.Looking for Opportunities.
               </p>
 
               <h3 className="mt-7 text-lg font-semibold text-slate-900">

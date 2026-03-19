@@ -19,6 +19,15 @@ const StriversTopicsPage = () => {
   const user = JSON.parse(sessionStorage.getItem("user"));
   const [topicWiseSolvedProblems, setTopicWiseSolvedProblems] = useState({});
 
+  const overallSolvedProblems = Object.values(topicWiseSolvedProblems || {}).reduce(
+    (total, problems) => total + (problems?.length || 0),
+    0
+  );
+  const overallTotalProblems = (topics || []).reduce(
+    (total, topic) => total + (topic?.totalProblems || 0),
+    0
+  );
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -121,11 +130,8 @@ const StriversTopicsPage = () => {
                 <div className="absolute inset-[3px] rounded-full bg-gradient-to-tr from-emerald-500 via-lime-400 to-emerald-600" />
                 <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-slate-950 text-white text-xs font-medium">
                   <span className="leading-tight text-center">
-                    <span className="block text-base font-semibold">
-                      {Object.values(topicWiseSolvedProblems || {}).reduce(
-                        (total, problems) => total + (problems?.length || 0),
-                        0
-                      )}
+                    <span className="block text-[11px] font-semibold">
+                      {overallSolvedProblems}/{overallTotalProblems}
                     </span>
                     <span className="block text-[9px] uppercase tracking-wide text-emerald-200">
                       Solved
