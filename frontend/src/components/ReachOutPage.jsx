@@ -58,6 +58,7 @@ const ReachOutPage = () => {
       else{
         setLoading(false);
         console.log(res.message);
+        console.log("Error ", res.error);
         toast.error(res.message);
         setStatus("Something went wrong ❌")
       }
