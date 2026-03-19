@@ -130,11 +130,11 @@ const StriversTopicsPage = () => {
                 <div className="absolute inset-[3px] rounded-full bg-gradient-to-tr from-emerald-500 via-lime-400 to-emerald-600" />
                 <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-slate-950 text-white text-xs font-medium">
                   <span className="leading-tight text-center">
-                    <span className="block text-sm font-semibold">
-                      {overallSolvedProblems}/{overallTotalProblems}
+                    <span className="block text-[10px] font-semibold text-emerald-300">
+                      S: {overallSolvedProblems}
                     </span>
-                    <span className="block text-[9px] uppercase tracking-wide text-emerald-200">
-                      Solved
+                    <span className="block text-[10px] font-semibold text-slate-200">
+                      T: {overallTotalProblems}
                     </span>
                   </span>
                 </div>
