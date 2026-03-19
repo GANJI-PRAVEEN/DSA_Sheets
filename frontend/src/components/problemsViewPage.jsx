@@ -89,7 +89,7 @@ const StriversproblemsView = () => {
 
     const res = await assignUpdateProblemStatusAPI({ sheetId:sheetId,userId: user?._id, topicId: topicId, problemId: problemId, status: status });
     if (res.success) {
-      toast.success("progress updated");
+      toast.success(res.message);
     }
     else {
       console.log("error", res.error)
