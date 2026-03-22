@@ -1,13 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchSheetsAPI } from "../../api/calls";
 import { toast } from "react-toastify";
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const [sheetSelected, setSheetSelected] = useState("");
   const [loading, setLoading] = useState(true);
   const user = JSON.parse(sessionStorage.getItem("user"));
   const [sheets, setSheets] = useState(null);
@@ -56,18 +54,33 @@ const HomePage = () => {
         </div>
       ) : (
         <>
+          <div className="mx-auto mt-6 max-w-5xl px-4">
+            <div className="rounded-2xl border border-indigo-400/40 bg-linear-to-r from-indigo-50 to-violet-50 p-5 text-left shadow-md">
+              <p className="text-xs font-bold uppercase tracking-wider text-indigo-700">What&apos;s New</p>
+              <h2 className="mt-1 text-2xl font-extrabold text-slate-900">Problem Filtering is now live 🚀</h2>
+              <p className="mt-2 text-sm text-slate-700">
+                You can now filter problems inside sheets by difficulty, topic, and solve status to quickly focus on the right set.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm">Difficulty</span>
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm">Topic</span>
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm">Solved / Unsolved</span>
+              </div>
+            </div>
+          </div>
+
           <div className="text-center m-10">
-            <p className="text-3xl sm:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 drop-shadow-md">
+            <p className="text-3xl sm:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 drop-shadow-md">
               Welcome, {user?.name || "Striver"} 👋
             </p>
           </div>
           
           <div className="flex justify-center mt-8 px-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full">
-              {sheets?.map((sheet) => (
+              {sheets?.length ? sheets.map((sheet) => (
                 <div
                   key={sheet._id}
-                  className="bg-white/10 border border-slate-700 rounded-2xl p-6 shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-transform duration-200 text-left flex flex-col justify-between min-h-[170px]"
+                  className="bg-white/10 border border-slate-700 rounded-2xl p-6 shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-transform duration-200 text-left flex flex-col justify-between min-h-42.5"
                 >
                   <div>
                     <h2 className="text-xl font-semibold mb-2">
@@ -86,7 +99,11 @@ const HomePage = () => {
                     </button>
                   </div>
                 </div>
-              ))}
+              )) : (
+                <div className="col-span-full rounded-xl border border-slate-300 bg-white p-6 text-center text-slate-600 shadow-sm">
+                  No sheets available right now.
+                </div>
+              )}
             </div>
           </div>
         </>
