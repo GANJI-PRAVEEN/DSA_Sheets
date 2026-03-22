@@ -59,12 +59,11 @@ const HomePage = () => {
               <p className="text-xs font-bold uppercase tracking-wider text-indigo-700">What&apos;s New</p>
               <h2 className="mt-1 text-2xl font-extrabold text-slate-900">Problem Filtering is now live 🚀</h2>
               <p className="mt-2 text-sm text-slate-700">
-                You can now filter problems inside sheets by difficulty, topic, and solve status to quickly focus on the right set.
+                You can now filter problems inside sheets by difficulty to quickly focus on the right set.
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm">Difficulty</span>
-                <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm">Topic</span>
-                <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm">Solved / Unsolved</span>
+            
               </div>
             </div>
           </div>
