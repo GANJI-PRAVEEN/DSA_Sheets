@@ -156,12 +156,7 @@ const StriversTopicsPage = () => {
                       (problemsSolvedForTopic / totalProblems) * 100
                     )
                   : 0;
-                const numericPosition = Number(topic.position);
-                const displayPosition = Number.isFinite(numericPosition)
-                  ? numericPosition > 0
-                    ? numericPosition
-                    : index + 1
-                  : index + 1;
+                const displayPosition = index + 1;
 
                 return (
                   <div

@@ -37,9 +37,20 @@ const StriversproblemsView = () => {
   );
   const totalProblemsInTopic = problems?.length || 0;
 
+  const normalizeDifficulty = (difficulty) =>
+    String(difficulty || '').trim().toLowerCase();
+
+  const getDifficultyTextClass = (difficulty) => {
+    const normalizedDifficulty = normalizeDifficulty(difficulty);
+    if (normalizedDifficulty === 'easy') return 'text-green-600';
+    if (normalizedDifficulty === 'medium') return 'text-yellow-600';
+    if (normalizedDifficulty === 'hard') return 'text-red-600';
+    return 'text-slate-700';
+  };
+
   const filteredProblems = (problems || []).filter((problem) => {
     if (difficultyFilter === 'all') return true;
-    return String(problem?.difficulty || '').toLowerCase() === difficultyFilter;
+    return normalizeDifficulty(problem?.difficulty) === difficultyFilter;
   });
 
   useEffect(() => {
@@ -250,8 +261,10 @@ const StriversproblemsView = () => {
                     <td className="px-4 py-3 text-left text-[13px] font-medium text-slate-800 border-r-2 border-slate-200">
                       {problem.problemName}
                     </td>
-                    <td className={`${problem.difficulty === 'easy' ? 'text-green-600' : problem.difficulty === 'medium' ? 'text-yellow-600' : 'text-red-600'} px-4 py-3 text-left text-[13px] font-medium  border-r-2 border-slate-200`}>
-                      {problem.difficulty.charAt(0).toUpperCase() + problem.difficulty.slice(1)}
+                    <td className={`${getDifficultyTextClass(problem?.difficulty)} px-4 py-3 text-left text-[13px] font-medium  border-r-2 border-slate-200`}>
+                      {normalizeDifficulty(problem?.difficulty)
+                        ? normalizeDifficulty(problem?.difficulty).charAt(0).toUpperCase() + normalizeDifficulty(problem?.difficulty).slice(1)
+                        : '-'}
                     </td>
                     <td className="px-6 py-3 text-left text-[13px] font-medium text-slate-700 border-r-2 border-slate-300 ">
                       {problem?.links?.lc_link ? (
