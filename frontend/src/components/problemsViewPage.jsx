@@ -14,6 +14,7 @@ const StriversproblemsView = () => {
   const [solvedProblems, setSolvedProblems] = useState([]);
   const [problems, setProblems] = useState(null);
   const [difficultyFilter, setDifficultyFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const user = JSON.parse(sessionStorage.getItem("user"));
 
@@ -49,8 +50,16 @@ const StriversproblemsView = () => {
   };
 
   const filteredProblems = (problems || []).filter((problem) => {
-    if (difficultyFilter === 'all') return true;
-    return normalizeDifficulty(problem?.difficulty) === difficultyFilter;
+    const matchesDifficulty =
+      difficultyFilter === 'all' ||
+      normalizeDifficulty(problem?.difficulty) === difficultyFilter;
+
+    const normalizedSearchTerm = searchTerm.trim().toLowerCase();
+    const matchesSearch =
+      !normalizedSearchTerm ||
+      String(problem?.problemName || '').toLowerCase().includes(normalizedSearchTerm);
+
+    return matchesDifficulty && matchesSearch;
   });
 
   useEffect(() => {
@@ -213,18 +222,28 @@ const StriversproblemsView = () => {
           </div>
 
           <div className="overflow-x-auto rounded-xl border-2 border-slate-300 bg-white shadow-sm">
-            <div className="flex items-center gap-2 px-4 py-3 border-b-2 border-slate-200 bg-slate-50">
-              <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-600">Filter</span>
-              {['all', 'easy', 'medium', 'hard'].map((difficulty) => (
-                <button
-                  key={difficulty}
-                  type="button"
-                  onClick={() => setDifficultyFilter(difficulty)}
-                  className={`px-3 py-1 rounded-full text-[11px] font-semibold border transition-colors ${difficultyFilter === difficulty ? 'bg-indigo-500 text-white border-indigo-500' : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'}`}
-                >
-                  {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
-                </button>
-              ))}
+            <div className="flex flex-col gap-3 px-4 py-3 border-b-2 border-slate-200 bg-slate-50 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-600">Filter</span>
+                {['all', 'easy', 'medium', 'hard'].map((difficulty) => (
+                  <button
+                    key={difficulty}
+                    type="button"
+                    onClick={() => setDifficultyFilter(difficulty)}
+                    className={`px-3 py-1 rounded-full text-[11px] font-semibold border transition-colors ${difficultyFilter === difficulty ? 'bg-indigo-500 text-white border-indigo-500' : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'}`}
+                  >
+                    {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
+                  </button>
+                ))}
+              </div>
+
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search problem"
+                className="w-full sm:w-64 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
             </div>
             <table className="min-w-full border-collapse text-[13px]">
               <thead className="bg-slate-50 border-b-2 border-slate-300">
@@ -320,7 +339,7 @@ const StriversproblemsView = () => {
                 {filteredProblems?.length === 0 && (
                   <tr>
                     <td colSpan={7} className="px-4 py-6 text-center text-sm font-medium text-slate-500">
-                      No problems found for selected difficulty.
+                      No problems found for selected filters/search.
                     </td>
                   </tr>
                 )}
