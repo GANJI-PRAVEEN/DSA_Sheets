@@ -57,12 +57,13 @@ const HomePage = () => {
           <div className="mx-auto mt-6 max-w-5xl px-4">
             <div className="rounded-2xl border border-indigo-400/40 bg-linear-to-r from-indigo-50 to-violet-50 p-5 text-left shadow-md">
               <p className="text-xs font-bold uppercase tracking-wider text-indigo-700">What&apos;s New</p>
-              <h2 className="mt-1 text-2xl font-extrabold text-slate-900">Problem Filtering is now live 🚀</h2>
+              <h2 className="mt-1 text-2xl font-extrabold text-slate-900">Search + Filtering is now live 🚀</h2>
               <p className="mt-2 text-sm text-slate-700">
-                You can now filter problems inside sheets by difficulty to quickly focus on the right set.
+                You can now search problems by name and filter by difficulty inside each topic to find the exact question faster.
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm">Difficulty</span>
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm">Search</span>
             
               </div>
             </div>
