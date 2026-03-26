@@ -264,7 +264,7 @@ const StriversproblemsView = () => {
                     <button
                       type="button"
                       onClick={() => setSearchTerm('')}
-                      className="ml-2 inline-flex h-6 w-6 items-center justify-center rounded-full text-xs text-slate-500 hover:bg-slate-100"
+                      className="ml-2 inline-flex h-6 w-6 items-center justify-center rounded-md text-xs text-slate-500 hover:bg-slate-100"
                       aria-label="Clear search"
                     >
                       ×
