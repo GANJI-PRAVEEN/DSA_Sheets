@@ -256,7 +256,7 @@ const StriversproblemsView = () => {
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Type problem name"
+                    placeholder="Search problem name"
                     className="w-full bg-transparent text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none"
                   />
                   {searchTerm && (
