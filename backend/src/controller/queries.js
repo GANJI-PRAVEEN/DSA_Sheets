@@ -529,7 +529,7 @@ export const retrieveUserProgress = async (req, res) => {
     if (!sheetId || !topicId || !userId) {
       return res.status(400).json({
         success: false,
-        message: "provide every data",
+        message: "Please Login again",
       });
     }
 
