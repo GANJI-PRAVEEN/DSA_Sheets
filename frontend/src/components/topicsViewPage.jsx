@@ -16,7 +16,7 @@ const StriversTopicsPage = () => {
   
   const [topics, setTopics] = useState(null);
   const [loading, setLoading] = useState(true);
-  const user = JSON.parse(sessionStorage.getItem("user"));
+  const user = localStorage.getItem("user");
   const [topicWiseSolvedProblems, setTopicWiseSolvedProblems] = useState({});
 
   const overallSolvedProblems = Object.values(topicWiseSolvedProblems || {}).reduce(

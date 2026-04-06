@@ -49,7 +49,7 @@ const LoginPage = () => {
           email:loggedInUserData.Email,
           name:loggedInUserData.Name
         }
-        sessionStorage.setItem("user",JSON.stringify(user));
+        localStorage.setItem("user",JSON.stringify(user));
         console.log("LoggedInUserID",loggedInUserData._id);
         navigate('/');
       }
