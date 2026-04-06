@@ -51,6 +51,7 @@ const LoginPage = () => {
         }
         localStorage.setItem("user",JSON.stringify(user));
         console.log("LoggedInUserID",loggedInUserData._id);
+        console.log("loggin user ",user);
         navigate('/');
       }
       else{
