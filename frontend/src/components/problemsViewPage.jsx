@@ -16,7 +16,13 @@ const StriversproblemsView = () => {
   const [difficultyFilter, setDifficultyFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
-  const user = localStorage.getItem("user");
+  const user = (() => {
+    try {
+      return JSON.parse(localStorage.getItem("user") || "null");
+    } catch {
+      return null;
+    }
+  })();
 
   const solvedProblemIdSet = new Set(
     (solvedProblems || []).map((progress) => String(progress.problemId))

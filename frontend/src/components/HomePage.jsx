@@ -7,7 +7,13 @@ import { toast } from "react-toastify";
 const HomePage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const user = localStorage.getItem("user");
+  const user = (() => {
+    try {
+      return JSON.parse(localStorage.getItem("user") || "null");
+    } catch {
+      return null;
+    }
+  })();
   const [sheets, setSheets] = useState(null);
   
   useEffect(() => {
