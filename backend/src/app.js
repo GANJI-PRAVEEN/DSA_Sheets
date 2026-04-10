@@ -5,8 +5,29 @@ import dsaSheetsRouter from './routes/dsaSheetsRouter.js';
 
 const app = express();
 
-app.use(cors());
-app.options(/.*/, cors());
+const allowedOrigins = [
+  'https://dsasheets2.vercel.app',
+  ...(process.env.CORS_ORIGINS
+    ? process.env.CORS_ORIGINS.split(',').map((origin) => origin.trim()).filter(Boolean)
+    : []),
+];
+
+const corsOptions = {
+  origin(origin, callback) {
+    // Allow non-browser requests (no Origin header) and approved browser origins.
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app.use(express.json());
 
