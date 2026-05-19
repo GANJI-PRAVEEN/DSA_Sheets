@@ -149,6 +149,7 @@ const StriversproblemsView = () => {
     const loadAllData = async () => {
       try {
         setLoading(true);
+        retrieveSheet();
         await Promise.all([retrieveSheet(), retrieveUserProgress(), retrieveProblems()]);
       } finally {
         setLoading(false);
