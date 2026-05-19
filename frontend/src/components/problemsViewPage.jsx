@@ -8,6 +8,7 @@ const StriversproblemsView = () => {
   const location = useLocation();
   const {topicId,topicName,sheetDetails,sheetId} = location?.state;
   const [loading, setLoading] = useState(true);
+  const [backendSleepNotice, setBackendSleepNotice] = useState('');
 
   const [topics, setTopics] = useState(null);
   const topicSelected = topics?.find(t => t.topicId === topicId);
@@ -55,6 +56,20 @@ const StriversproblemsView = () => {
     return 'text-slate-700';
   };
 
+  const isLikelyBackendSleepError = (error) => {
+    const message = String(error?.message || error || '').toLowerCase();
+    return (
+      message.includes('failed to fetch') ||
+      message.includes('network error') ||
+      message.includes('networkrequestfailed') ||
+      message.includes('fetch failed')
+    );
+  };
+
+  const showBackendSleepNotice = () => {
+    setBackendSleepNotice('The backend may have gone to sleep. Refresh the page after a few seconds and try again.');
+  };
+
   const filteredProblems = (problems || []).filter((problem) => {
     const matchesDifficulty =
       difficultyFilter === 'all' ||
@@ -82,6 +97,9 @@ const StriversproblemsView = () => {
         }
       } catch (error) {
         console.error("Error retrieving topics:", error);
+        if (isLikelyBackendSleepError(error)) {
+          showBackendSleepNotice();
+        }
         toast.error("Error retrieving topics");
       }
     };
@@ -99,6 +117,9 @@ const StriversproblemsView = () => {
         }
       } catch (error) {
         console.error("Error retrieving progress:", error);
+        if (isLikelyBackendSleepError(error)) {
+          showBackendSleepNotice();
+        }
         toast.error("Error retrieving progress");
       }
     };
@@ -118,6 +139,9 @@ const StriversproblemsView = () => {
         }
       } catch (error) {
         console.error("Error retrieving problems:", error);
+        if (isLikelyBackendSleepError(error)) {
+          showBackendSleepNotice();
+        }
         toast.error("Error retrieving problems");
       }
     };
@@ -174,6 +198,11 @@ const StriversproblemsView = () => {
       }
     } catch (error) {
       console.log("error", error);
+      if (isLikelyBackendSleepError(error)) {
+        showBackendSleepNotice();
+        toast.error("Backend may be asleep. Please refresh the page and try again.");
+        return;
+      }
       toast.error("Failed to update status");
     }
 
@@ -192,6 +221,29 @@ const StriversproblemsView = () => {
         </div>
       ) : (
         <main className="max-w-5xl mx-auto px-4 py-8">
+          {backendSleepNotice && (
+            <div className="mb-5 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 shadow-sm">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <p className="font-medium">{backendSleepNotice}</p>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => window.location.reload()}
+                    className="rounded-md bg-amber-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-amber-700"
+                  >
+                    Refresh page
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setBackendSleepNotice('')}
+                    className="rounded-md border border-amber-300 px-3 py-1.5 text-xs font-semibold text-amber-900 transition-colors hover:bg-amber-100"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
           <div className="flex items-center justify-between gap-4 mb-6">
             <div>
               <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate-500">
