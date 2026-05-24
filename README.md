@@ -31,14 +31,6 @@ A full-stack web application that centralizes top curated DSA problem sheets —
 
 ---
 
-## 🖼️ Screenshots
-
-<!-- Replace with actual screenshots -->
-```
-📸 Add screenshots here: Home Page | Topic View | Problem Detail | Progress Dashboard
-```
-
----
 
 ## 🚀 Tech Stack
 
