@@ -9,7 +9,7 @@ A full-stack web application that centralizes top curated DSA problem sheets —
 ## 🌐 Live Demo
 
 <!-- Add your deployed link here -->
-[https://your-deployed-url.vercel.app](https://dsasheets2.vercel.app/)
+[https://dsasheets2.vercel.app/](https://dsasheets2.vercel.app/)
 
 ---
 
