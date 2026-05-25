@@ -105,7 +105,7 @@ const StriversTopicsPage = () => {
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-[var(--theme-background)] text-[var(--theme-text)]">
       <Navbar />
 
       {loading ? (
@@ -118,13 +118,13 @@ const StriversTopicsPage = () => {
           </div>
         </div>
       ) : (
-        <div className="max-w-5xl mx-auto px-4 py-8">
+        <div className="mx-auto max-w-5xl px-4 py-8">
           <div className="flex items-start justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[var(--theme-text)]">
                 {sheetDetails?.sheetName} Topics
               </h1>
-              <p className="mt-2 text-sm text-slate-600">
+              <p className="mt-2 text-sm text-[var(--theme-muted)]">
                 Pick a topic to focus your practice. See how many problems
                 you've solved at a glance.
               </p>
@@ -167,7 +167,7 @@ const StriversTopicsPage = () => {
                 return (
                   <div
                     key={topic.topicId}
-                    className="flex h-52 flex-col justify-between rounded-2xl border border-slate-700 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-5 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all"
+                    className="flex h-52 flex-col justify-between rounded-2xl border border-[var(--theme-border)] bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-5 shadow-md transition-all hover:-translate-y-1 hover:shadow-xl"
                   >
                     {/* Top: topic title */}
                     <div className="flex items-start gap-3">

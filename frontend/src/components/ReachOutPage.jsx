@@ -34,34 +34,34 @@ const ReachOutPage = () => {
 
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[var(--theme-background)] text-[var(--theme-text)]">
       <Navbar />
 
       <main className="mx-auto max-w-5xl px-4 py-10 sm:py-12">
 
-        <section className="overflow-hidden rounded-3xl border border-blue-100 bg-white shadow-sm">
+        <section className="overflow-hidden rounded-3xl border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] shadow-sm">
           <div className="px-6 py-8 sm:px-8">
 
-              <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+              <h1 className="text-3xl font-bold tracking-tight text-[var(--theme-text)]">
                 Ganji Praveen
               </h1>
 
-              <p className="mt-1 text-sm font-medium text-blue-700">
+              <p className="mt-1 text-sm font-medium text-[var(--theme-accent)]">
                 B.Tech CSE Student · MERN Stack Developer
               </p>
 
-              <h2 className="mt-6 text-2xl font-bold tracking-tight text-slate-900">
+              <h2 className="mt-6 text-2xl font-bold tracking-tight text-[var(--theme-text)]">
                 About Me
               </h2>
 
-              <p className="mt-3 max-w-2xl text-slate-600">
+              <p className="mt-3 max-w-2xl text-[var(--theme-muted)]">
                 I am a Ganji Praveen, a Student. I focus on building full stack
                 applications to solve real world problems. I am enthusiastic
                 about learning new technologies and currently exploring AI
                 technologies.Looking for Opportunities.
               </p>
 
-              <h3 className="mt-7 text-lg font-semibold text-slate-900">
+              <h3 className="mt-7 text-lg font-semibold text-[var(--theme-text)]">
                 Skills
               </h3>
 
@@ -69,7 +69,7 @@ const ReachOutPage = () => {
                 {skills.map((skill) => (
                   <span
                     key={skill}
-                    className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-sm font-medium text-blue-800"
+                    className="rounded-full border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3 py-1 text-sm font-medium text-[var(--theme-text)]"
                   >
                     {skill}
                   </span>
@@ -78,23 +78,23 @@ const ReachOutPage = () => {
 
               {/* CONTACT SECTION */}
 
-              <h3 className="mt-8 text-lg font-semibold text-slate-900">
+              <h3 className="mt-8 text-lg font-semibold text-[var(--theme-text)]">
                 Reach Out
               </h3>
 
-              <div className="mt-4 rounded-xl border border-blue-200 bg-blue-50 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">
+              <div className="mt-4 rounded-xl border border-[var(--theme-border)] bg-[var(--theme-surface)] p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-[var(--theme-accent)]">
                   Gmail
                 </p>
 
-                <p className="mt-1 text-sm font-semibold text-slate-900">
+                <p className="mt-1 text-sm font-semibold text-[var(--theme-text)]">
                   {email}
                 </p>
 
                 <div className="mt-3 flex gap-2">
                   <a
                     href={`mailto:${email}`}
-                    className="rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700"
+                    className="rounded-lg bg-[var(--theme-accent)] px-3 py-2 text-xs font-semibold text-white hover:bg-[var(--theme-accent-strong)]"
                   >
                     Send Email
                   </a>
@@ -102,7 +102,7 @@ const ReachOutPage = () => {
                   <button
                     type="button"
                     onClick={copyEmail}
-                    className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50"
+                    className="rounded-lg border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-2 text-xs font-semibold text-[var(--theme-text)] hover:bg-black/5"
                   >
                     Copy Gmail
                   </button>
@@ -115,7 +115,7 @@ const ReachOutPage = () => {
 
                 <a
                   href={`mailto:${email}`}
-                  className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+                  className="rounded-xl border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-4 py-3 text-sm font-semibold text-[var(--theme-text)] hover:bg-black/5"
                 >
                   Email
                 </a>
@@ -124,7 +124,7 @@ const ReachOutPage = () => {
                   href="https://www.linkedin.com/in/ganjipraveen22/"
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+                  className="rounded-xl border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-4 py-3 text-sm font-semibold text-[var(--theme-text)] hover:bg-black/5"
                 >
                   LinkedIn
                 </a>
@@ -133,7 +133,7 @@ const ReachOutPage = () => {
                   href="https://github.com/GANJI-PRAVEEN"
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+                  className="rounded-xl border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-4 py-3 text-sm font-semibold text-[var(--theme-text)] hover:bg-black/5"
                 >
                   GitHub
                 </a>

@@ -210,7 +210,7 @@ const StriversproblemsView = () => {
   }
 
   return (
-    <div className="font-sans">
+    <div className="min-h-screen bg-[var(--theme-background)] font-sans text-[var(--theme-text)]">
       <Navbar />
       
       {loading ? (
@@ -221,7 +221,7 @@ const StriversproblemsView = () => {
           </div>
         </div>
       ) : (
-        <main className="max-w-5xl mx-auto px-4 py-8">
+        <main className="mx-auto max-w-5xl px-4 py-8">
           {backendSleepNotice && (
             <div className="mb-5 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 shadow-sm">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -247,15 +247,15 @@ const StriversproblemsView = () => {
           )}
           <div className="flex items-center justify-between gap-4 mb-6">
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate-500">
+              <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-[var(--theme-muted)]">
                 {sheetDetails?.sheetName || 'abc'}
               </p>
-              <h1 className="mt-1 text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900">
+              <h1 className="mt-1 text-2xl sm:text-3xl font-semibold tracking-tight text-[var(--theme-text)]">
                 {topicName || 'Selected Topic'}
               </h1>
-              <p className="mt-2 text-sm leading-relaxed text-slate-600">
+              <p className="mt-2 text-sm leading-relaxed text-[var(--theme-muted)]">
                 Start solving handpicked problems for {topicName}
-                <span className="font-semibold text-slate-900">
+                <span className="font-semibold text-[var(--theme-text)]">
                   
                 </span>
               </p>
@@ -280,16 +280,16 @@ const StriversproblemsView = () => {
             </div>
           </div>
 
-          <div className="overflow-x-auto rounded-xl border-2 border-slate-300 bg-white shadow-sm">
-            <div className="flex flex-col gap-3 px-4 py-3 border-b-2 border-slate-200 bg-slate-50 sm:flex-row sm:items-center sm:justify-between">
+          <div className="overflow-x-auto rounded-xl border-2 border-[var(--theme-border)] bg-[var(--theme-surface-strong)] shadow-sm">
+            <div className="flex flex-col gap-3 border-b-2 border-[var(--theme-border)] bg-[var(--theme-surface)] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-600">Filter</span>
+                <span className="text-[11px] font-semibold uppercase tracking-wide text-[var(--theme-muted)]">Filter</span>
                 {['all', 'easy', 'medium', 'hard'].map((difficulty) => (
                   <button
                     key={difficulty}
                     type="button"
                     onClick={() => setDifficultyFilter(difficulty)}
-                    className={`px-3 py-1 rounded-full text-[11px] font-semibold border transition-colors ${difficultyFilter === difficulty ? 'bg-indigo-500 text-white border-indigo-500' : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-100'}`}
+                    className={`px-3 py-1 rounded-full text-[11px] font-semibold border transition-colors ${difficultyFilter === difficulty ? 'bg-indigo-500 text-white border-indigo-500' : 'bg-[var(--theme-surface-strong)] text-[var(--theme-muted)] border-[var(--theme-border)] hover:bg-black/5'}`}
                   >
                     {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
                   </button>
@@ -297,7 +297,7 @@ const StriversproblemsView = () => {
               </div>
 
               <div className="w-full sm:w-80">
-                <div className="flex items-center rounded-md border border-slate-300 bg-white px-3 py-2 shadow-sm focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500">
+                <div className="flex items-center rounded-md border border-[var(--theme-border)] bg-[var(--theme-surface-strong)] px-3 py-2 shadow-sm focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -316,13 +316,13 @@ const StriversproblemsView = () => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search problem name"
-                    className="w-full bg-transparent text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none"
+                    className="w-full bg-transparent text-sm text-[var(--theme-text)] placeholder:text-[var(--theme-muted)] focus:outline-none"
                   />
                   {searchTerm && (
                     <button
                       type="button"
                       onClick={() => setSearchTerm('')}
-                      className="ml-2 rounded px-2 py-0.5 text-xs font-semibold text-slate-500 hover:bg-slate-100"
+                      className="ml-2 rounded px-2 py-0.5 text-xs font-semibold text-[var(--theme-muted)] hover:bg-black/5"
                     >
                       Clear
                     </button>
@@ -331,46 +331,46 @@ const StriversproblemsView = () => {
               </div>
             </div>
             <table className="min-w-full border-collapse text-[13px]">
-              <thead className="bg-slate-50 border-b-2 border-slate-300">
+              <thead className="border-b-2 border-[var(--theme-border)] bg-[var(--theme-surface)]">
                 <tr>
-                  <th className="px-4 py-3 text-left text-[11px] font-medium text-slate-500  tracking-wide ">
+                  <th className="px-4 py-3 text-left text-[11px] font-medium text-[var(--theme-muted)] tracking-wide ">
                     S.No
                   </th>
-                  <th className="px-4 py-3 text-left text-[11px] font-medium text-slate-500  tracking-wide">
+                  <th className="px-4 py-3 text-left text-[11px] font-medium text-[var(--theme-muted)] tracking-wide">
                     Problem Name
                   </th>
-                  <th className="px-4 py-3 text-left text-[11px] font-medium text-slate-500  tracking-wide">
+                  <th className="px-4 py-3 text-left text-[11px] font-medium text-[var(--theme-muted)] tracking-wide">
                     Difficulty
                   </th>
-                  <th className="px-6 py-3 text-left text-[11px] font-medium text-slate-500  tracking-wide">
+                  <th className="px-6 py-3 text-left text-[11px] font-medium text-[var(--theme-muted)] tracking-wide">
                     Leetcode
                   </th>
-                  <th className="px-4 py-3 text-left text-[11px] font-medium text-slate-500  tracking-wide">
+                  <th className="px-4 py-3 text-left text-[11px] font-medium text-[var(--theme-muted)] tracking-wide">
                     GFG
                   </th>
-                  <th className="px-4 py-3 text-left text-[11px] font-medium text-slate-500  tracking-wide">
+                  <th className="px-4 py-3 text-left text-[11px] font-medium text-[var(--theme-muted)] tracking-wide">
                     CodingNinjas
                   </th>
-                  <th className="px-4 py-3 text-center text-[11px] font-medium text-slate-500  tracking-wide">
+                  <th className="px-4 py-3 text-center text-[11px] font-medium text-[var(--theme-muted)] tracking-wide">
                     Status
                   </th>
                 </tr>
               </thead>
               <tbody className="text-sm">
                 {filteredProblems?.map((problem, index) => (
-                  <tr key={index} className={`${isProblemSolved(problem) ? 'bg-green-600/40' : ''} border-b-2 border-slate-200 transition-colors`}>
-                    <td className="px-4 py-3 text-left text-[13px] font-medium text-slate-700 border-r-2 border-slate-200">
+                  <tr key={index} className={`${isProblemSolved(problem) ? 'bg-green-600/25' : ''} border-b-2 border-[var(--theme-border)] transition-colors`}>
+                    <td className="px-4 py-3 text-left text-[13px] font-medium text-[var(--theme-muted)] border-r-2 border-[var(--theme-border)]">
                       {index + 1}
                     </td>
-                    <td className="px-4 py-3 text-left text-[13px] font-medium text-slate-800 border-r-2 border-slate-200">
+                    <td className="px-4 py-3 text-left text-[13px] font-medium text-[var(--theme-text)] border-r-2 border-[var(--theme-border)]">
                       {problem.problemName}
                     </td>
-                    <td className={`${getDifficultyTextClass(problem?.difficulty)} px-4 py-3 text-left text-[13px] font-medium  border-r-2 border-slate-200`}>
+                    <td className={`${getDifficultyTextClass(problem?.difficulty)} px-4 py-3 text-left text-[13px] font-medium  border-r-2 border-[var(--theme-border)]`}>
                       {normalizeDifficulty(problem?.difficulty)
                         ? normalizeDifficulty(problem?.difficulty).charAt(0).toUpperCase() + normalizeDifficulty(problem?.difficulty).slice(1)
                         : '-'}
                     </td>
-                    <td className="px-6 py-3 text-left text-[13px] font-medium text-slate-700 border-r-2 border-slate-300 ">
+                    <td className="px-6 py-3 text-left text-[13px] font-medium text-[var(--theme-muted)] border-r-2 border-[var(--theme-border)] ">
                       {problem?.links?.lc_link ? (
                         <a
                           href={problem.links.lc_link}
@@ -381,10 +381,10 @@ const StriversproblemsView = () => {
                           Link
                         </a>
                       ) : (
-                        <span className="text-slate-400">-</span>
+                        <span className="text-[var(--theme-muted)]">-</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-left text-[13px] font-medium text-slate-700 border-r-2 border-slate-300 ">
+                    <td className="px-4 py-3 text-left text-[13px] font-medium text-[var(--theme-muted)] border-r-2 border-[var(--theme-border)] ">
                       {problem?.links?.gc_link || problem?.links?.gfg_link ? (
                         <a
                           href={problem.links.gc_link || problem.links.gfg_link}
@@ -395,10 +395,10 @@ const StriversproblemsView = () => {
                           Link
                         </a>
                       ) : (
-                        <span className="text-slate-400">-</span>
+                        <span className="text-[var(--theme-muted)]">-</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-left text-[13px] font-medium text-slate-700 border-r-2 border-slate-300 ">
+                    <td className="px-4 py-3 text-left text-[13px] font-medium text-[var(--theme-muted)] border-r-2 border-[var(--theme-border)] ">
                       {problem?.links?.coding_ninjas_link ? (
                         <a
                           href={problem.links.coding_ninjas_link}
@@ -409,10 +409,10 @@ const StriversproblemsView = () => {
                           Link
                         </a>
                       ) : (
-                        <span className="text-slate-400">-</span>
+                        <span className="text-[var(--theme-muted)]">-</span>
                       )}
                     </td>
-                    <td className="px-6 py-3 text-left text-[18px] font-medium text-slate-700 border-r-2 border-slate-300">
+                    <td className="px-6 py-3 text-left text-[18px] font-medium text-[var(--theme-muted)] border-r-2 border-[var(--theme-border)]">
                       <input
                         checked={isProblemSolved(problem)}
                         type="checkbox"
@@ -423,7 +423,7 @@ const StriversproblemsView = () => {
                 ))}
                 {filteredProblems?.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="px-4 py-6 text-center text-sm font-medium text-slate-500">
+                    <td colSpan={7} className="px-4 py-6 text-center text-sm font-medium text-[var(--theme-muted)]">
                       No problems found for selected filters/search.
                     </td>
                   </tr>

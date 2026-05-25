@@ -3,6 +3,7 @@ import Background from '../Background';
 import {userLoginAPI} from '../../api/calls.js'
 import {toast} from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import ThemeToggleButton from './ThemeToggleButton';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -63,18 +64,21 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center">
+    <div className="relative flex min-h-screen items-center justify-center bg-[var(--theme-background)] text-[var(--theme-text)]">
       <Background />
+      <div className="absolute right-4 top-4 z-20">
+        <ThemeToggleButton compact />
+      </div>
       <div className="relative z-10 w-full max-w-md p-6">
-        <div className="bg-white bg-opacity-90 backdrop-blur-sm shadow-2xl rounded-2xl p-8">
+        <div className="theme-card rounded-2xl p-8 backdrop-blur-sm">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h2>
-            <p className="text-gray-600">Sign in to your account</p>
+            <h2 className="mb-2 text-3xl font-bold text-[var(--theme-text)]">Welcome Back</h2>
+            <p className="text-[var(--theme-muted)]">Sign in to your account</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="mb-2 block text-sm font-medium text-[var(--theme-muted)]">
                 Email Address
               </label>
               <input
@@ -82,9 +86,7 @@ const LoginPage = () => {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
-                  errors.email ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className={`theme-input rounded-lg px-4 py-3 transition-all duration-200 ${errors.email ? 'border-red-500' : ''}`}
                 placeholder="Enter your email"
               />
               {errors.email && (
@@ -93,7 +95,7 @@ const LoginPage = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="mb-2 block text-sm font-medium text-[var(--theme-muted)]">
                 Password
               </label>
               <input
@@ -101,9 +103,7 @@ const LoginPage = () => {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
-                  errors.password ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className={`theme-input rounded-lg px-4 py-3 transition-all duration-200 ${errors.password ? 'border-red-500' : ''}`}
                 placeholder="Enter your password"
               />
               {errors.password && (
@@ -113,16 +113,16 @@ const LoginPage = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 font-medium"
+              className="theme-button-primary w-full rounded-lg py-3 px-4 font-medium transition-all duration-200"
             >
               {loading? 'Please Wait...':'Login'}
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-600">
+            <p className="text-[var(--theme-muted)]">
               Don't have an account?{' '}
-              <a href="#" className="text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200" onClick={() => navigate('/signup')}>
+              <a href="#" className="font-medium text-[var(--theme-accent)] transition-colors duration-200 hover:text-[var(--theme-accent-strong)]" onClick={() => navigate('/signup')}>
                 Sign up
               </a>
             </p>

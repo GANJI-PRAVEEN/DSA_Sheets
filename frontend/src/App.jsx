@@ -7,8 +7,11 @@ import HomePage from './components/HomePage.jsx';
 import TopicsViewPage from './components/topicsViewPage.jsx';
 import ProblemsViewPage from './components/problemsViewPage.jsx';
 import ReachOutPage from './components/ReachOutPage.jsx';
+import { ThemeProvider, useTheme } from './context/ThemeContext.jsx';
 
-function App() {
+const AppRoutes = () => {
+  const { theme } = useTheme();
+
   return (
     <BrowserRouter>
       <Routes>
@@ -19,8 +22,16 @@ function App() {
         <Route path='/reach-out' element={<ReachOutPage />} />
         <Route path='/' element={<HomePage />} />
       </Routes>
-      <ToastContainer />
+      <ToastContainer theme={theme} />
     </BrowserRouter>
+  )
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppRoutes />
+    </ThemeProvider>
   )
 }
 

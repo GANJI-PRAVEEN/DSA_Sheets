@@ -4,6 +4,7 @@ import { createUserAPI } from '../../api/calls';
 
 import {toast} from 'react-toastify'
 import { useNavigate } from "react-router-dom";
+import ThemeToggleButton from './ThemeToggleButton';
 
 const SignupPage = () => {
   const [name, setName] = useState('');
@@ -65,18 +66,21 @@ const handleSubmit = async (e) => {
 };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center">
+    <div className="relative flex min-h-screen items-center justify-center bg-[var(--theme-background)] text-[var(--theme-text)]">
       <Background />
+      <div className="absolute right-4 top-4 z-20">
+        <ThemeToggleButton compact />
+      </div>
       <div className="relative z-10 w-full max-w-md p-6">
-        <div className="bg-white bg-opacity-90 backdrop-blur-sm shadow-2xl rounded-2xl p-8">
+        <div className="theme-card rounded-2xl p-8 backdrop-blur-sm">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">Create Account</h2>
-            <p className="text-gray-600">Sign up to get started</p>
+            <h2 className="mb-2 text-3xl font-bold text-[var(--theme-text)]">Create Account</h2>
+            <p className="text-[var(--theme-muted)]">Sign up to get started</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="name" className="mb-2 block text-sm font-medium text-[var(--theme-muted)]">
                 Full Name
               </label>
               <input
@@ -84,9 +88,7 @@ const handleSubmit = async (e) => {
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
-                  errors.name ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className={`theme-input rounded-lg px-4 py-3 transition-all duration-200 ${errors.name ? 'border-red-500' : ''}`}
                 placeholder="Enter your full name"
               />
               {errors.name && (
@@ -95,7 +97,7 @@ const handleSubmit = async (e) => {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="mb-2 block text-sm font-medium text-[var(--theme-muted)]">
                 Email Address
               </label>
               <input
@@ -103,9 +105,7 @@ const handleSubmit = async (e) => {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
-                  errors.email ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className={`theme-input rounded-lg px-4 py-3 transition-all duration-200 ${errors.email ? 'border-red-500' : ''}`}
                 placeholder="Enter your email"
               />
               {errors.email && (
@@ -114,7 +114,7 @@ const handleSubmit = async (e) => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="mb-2 block text-sm font-medium text-[var(--theme-muted)]">
                 Password
               </label>
               <input
@@ -122,9 +122,7 @@ const handleSubmit = async (e) => {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
-                  errors.password ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className={`theme-input rounded-lg px-4 py-3 transition-all duration-200 ${errors.password ? 'border-red-500' : ''}`}
                 placeholder="Enter your password"
               />
               {errors.password && (
@@ -134,16 +132,16 @@ const handleSubmit = async (e) => {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 font-medium"
+              className="theme-button-primary w-full rounded-lg py-3 px-4 font-medium transition-all duration-200"
             >
               {loading? 'Please Wait...':'Create Account'}
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-600">
+            <p className="text-[var(--theme-muted)]">
               Already have an account?{' '}
-              <a href="" className="text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200" onClick={handleNavigateToLogin}>
+              <a href="" className="font-medium text-[var(--theme-accent)] transition-colors duration-200 hover:text-[var(--theme-accent-strong)]" onClick={handleNavigateToLogin}>
                 Login
               </a>
             </p>
