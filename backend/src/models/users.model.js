@@ -18,14 +18,7 @@ const usersModel = new Schema(
         Password:{
             type:String,
             default:null,
-        },
-        GoogleId:{
-            type:String,
-            sparse:true,
-            unique:true,
-            default:null
         }
-
     },
     {
         timestamps:true
