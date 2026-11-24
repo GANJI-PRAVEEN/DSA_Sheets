@@ -55,6 +55,7 @@ const handleSubmit = async (e) => {
       }
 
       localStorage.setItem("token", login.token);
+      console.log("token generated ",token);
 
       // Store existing user details
       const loggedInUserData = login.user;
