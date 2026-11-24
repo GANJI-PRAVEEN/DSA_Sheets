@@ -10,6 +10,7 @@ import { welcome ,createUser,userLoginCheck, getProfile,retrieveTopics,AssignPro
     fetchProblems
 
 } from "../controller/queries.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 
 
 const router = Router();
@@ -27,11 +28,11 @@ router.route('/').get(welcome);
 router.route('/create-user').post(createUser);
 router.route('/fetch-sheets').get(fetchSheets);
 router.route('/user-login').post(userLoginCheck);
-router.route('/profile/:userId').get(getProfile);
+router.route('/profile').get(authMiddleware,getProfile);
 router.route('/retrieveTopics').post(retrieveTopics);
-router.route('/assignProblemSolved').post(AssignProblemSolved);
-router.route('/retrieveUserProgress').post(retrieveUserProgress);
-router.route('/retrieveTopicWiseSolvedProblems').post(retrieveTopicWiseSolvedProblems);
+router.route('/assignProblemSolved').post(authMiddleware,AssignProblemSolved);
+router.route('/retrieveUserProgress').post(authMiddleware,retrieveUserProgress);
+router.route('/retrieveTopicWiseSolvedProblems').post(authMiddleware,retrieveTopicWiseSolvedProblems);
 router.route('/insertSheets').get(insertSheets);
 router.route('/insert-love-babbar-sheet').get(insertLoveBabbarSheet);
 router.route('/insert-apna-college-sheet').get(insertApnaCollegeSheet);

@@ -33,35 +33,60 @@ const LoginPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async(e) => {
-    e.preventDefault();
-    setLoading(true);
-    if (validateForm()) {
-      // Handle login logic here
-      console.log('Login attempt:', { email, password });
-      const login = await userLoginAPI({email,password});
-      if(login.success){
-        setLoading(false);
-        toast.success(login.message);
-        const loggedInUserData = login.user;
-        setUserData(loggedInUserData);
-        const user = {
-          _id:loggedInUserData._id,
-          email:loggedInUserData.Email,
-          name:loggedInUserData.Name
-        }
-        localStorage.setItem("user",JSON.stringify(user));
-        console.log("LoggedInUserID",loggedInUserData._id);
-        console.log("loggin user ",user);
-        navigate('/');
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!validateForm()) return;
+
+  setLoading(true);
+
+  try {
+    console.log("Login attempt:", { email });
+
+    const login = await userLoginAPI({ email, password });
+
+    if (login.success) {
+
+      // Store JWT token
+      if (!login.token) {
+        toast.error("Login successful, but authentication token is missing.");
+        return;
       }
-      else{
-        setLoading(false);
-        toast.error(login.message);
-      }
-      // You can add API call or navigation here
+
+      localStorage.setItem("token", login.token);
+
+      // Store existing user details
+      const loggedInUserData = login.user;
+
+      setUserData(loggedInUserData);
+
+      const user = {
+        _id: loggedInUserData._id,
+        email: loggedInUserData.Email,
+        name: loggedInUserData.Name,
+      };
+
+      localStorage.setItem("user", JSON.stringify(user));
+
+      toast.success(login.message);
+
+      console.log("LoggedInUserID", loggedInUserData._id);
+      console.log("Logged in user", user);
+
+      navigate("/");
+    } else {
+      toast.error(login.message);
     }
-  };
+
+  } catch (error) {
+    console.error("Login error:", error);
+    toast.error("Unable to connect to the server. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-[var(--theme-background)] text-[var(--theme-text)]">

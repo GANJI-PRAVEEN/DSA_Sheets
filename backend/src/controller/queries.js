@@ -11,6 +11,7 @@ import nodemailer from "nodemailer";
 import sheetsModel from "../models/sheets.model.js";
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
+import jwt from 'jsonwebtoken';
 dotenv.config();
 
 
@@ -252,10 +253,16 @@ export const userLoginCheck = async (req, res) => {
         Email: existUser.Email,
       };
 
+      const token = jwt.sign(
+        {userId:existUser._id},
+        process.env.JWT_SECRET
+      )
+
       return res.status(200).json({
         success: true,
         message: "Logged In successfully",
         user: userData,
+        token:token
       });
     } else {
       return res.status(401).json({
@@ -338,18 +345,22 @@ export const createUser = async (req, res) => {
   }
 };
 
+
 export const getProfile = async (req, res) => {
   try {
-    const { userId } = req.params;
+    // Get user ID from the verified JWT
+    const userId = req.userId;
 
     if (!userId) {
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
-        message: "User ID is required",
+        message: "Please login again",
       });
     }
 
-    const user = await usersModel.findById(userId).select("-Password"); // Exclude password from response
+    const user = await usersModel
+      .findById(userId)
+      .select("-Password");
 
     if (!user) {
       return res.status(404).json({
@@ -367,8 +378,10 @@ export const getProfile = async (req, res) => {
         Email: user.Email,
       },
     });
+
   } catch (error) {
     console.log("Failed to fetch profile", error);
+
     return res.status(500).json({
       success: false,
       message: "Failed to fetch profile",
@@ -376,6 +389,7 @@ export const getProfile = async (req, res) => {
     });
   }
 };
+
 
 export const fetchSheets = async (req, res) => {
   try {
@@ -452,9 +466,13 @@ export const retrieveTopics = async (req, res) => {
   }
 };
 
+
 export const AssignProblemSolved = async (req, res) => {
   try {
-    const { sheetId, userId, topicId, problemId, status } = req.body;
+    const { sheetId, topicId, problemId, status } = req.body;
+
+    // Get userId from the verified JWT
+    const userId = req.userId;
 
     if (!userId || !topicId || !problemId || !sheetId || !status) {
       return res.status(400).json({
@@ -483,7 +501,7 @@ export const AssignProblemSolved = async (req, res) => {
             status
           },
         },
-        { upsert: true } //  prevents duplicates
+        { upsert: true }
       );
 
       return res.status(200).json({
@@ -492,7 +510,7 @@ export const AssignProblemSolved = async (req, res) => {
       });
     }
 
-    //CASE 2: UNSOLVED → delete
+    // CASE 2: UNSOLVED → delete
     if (status === "unsolved") {
       await progressModel.deleteOne(query);
 
@@ -509,7 +527,7 @@ export const AssignProblemSolved = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("❌ Error updating progress:", error);
+    console.error("Error updating progress:", error);
 
     return res.status(500).json({
       success: false,
@@ -519,12 +537,17 @@ export const AssignProblemSolved = async (req, res) => {
   }
 };
 
+
+
 export const retrieveUserProgress = async (req, res) => {
-  //based on the topicId retrieve all problemsId which are solved
-  const { sheetId, topicId, userId } = req.body;
-  console.log("sheetId ", sheetId);
-  console.log("topicId ", topicId);
-  console.log("userId received", userId);
+  // Get the authenticated user's ID from JWT middleware
+  const { sheetId, topicId } = req.body;
+  const userId = req.userId;
+
+  console.log("sheetId:", sheetId);
+  console.log("topicId:", topicId);
+  console.log("Authenticated userId:", userId);
+
   try {
     if (!sheetId || !topicId || !userId) {
       return res.status(400).json({
@@ -537,16 +560,20 @@ export const retrieveUserProgress = async (req, res) => {
       sheetId: sheetId,
       topicId: topicId,
       userId: userId,
-      $or: [{ status: "solved" }, { status: { $exists: false } }],
+      $or: [
+        { status: "solved" },
+        { status: { $exists: false } },
+      ],
     });
 
     return res.status(200).json({
       success: true,
-      message: "Retrieved solved probelms by the user",
+      message: "Retrieved solved problems by the user",
       solvedProblems,
     });
+
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Error retrieving solved problems",
       error: error.message,
@@ -554,28 +581,44 @@ export const retrieveUserProgress = async (req, res) => {
   }
 };
 
+
 export const retrieveTopicWiseSolvedProblems = async (req, res) => {
-  const { sheetId, userId } = req.body;
+  const { sheetId } = req.body;
+  const userId = req.userId;
 
   try {
+    if (!sheetId || !userId) {
+      return res.status(400).json({
+        success: false,
+        message: "Please Login again",
+      });
+    }
+
     const topicSolved = await progressModel.find({
       userId: userId,
       sheetId: sheetId,
-      $or: [{ status: "solved" }, { status: { $exists: false } }],
+      $or: [
+        { status: "solved" },
+        { status: { $exists: false } },
+      ],
     });
+
     const topicWiseProblems = {};
+
     topicSolved.forEach((p) => {
       if (!topicWiseProblems[p.topicId]) {
         topicWiseProblems[p.topicId] = [];
       }
+
       topicWiseProblems[p.topicId].push(p.problemId);
     });
 
     return res.status(200).json({
       success: true,
-      message: "topicwise solved problems retrieved",
+      message: "Topic-wise solved problems retrieved",
       topicWiseProblems,
     });
+
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -584,6 +627,7 @@ export const retrieveTopicWiseSolvedProblems = async (req, res) => {
     });
   }
 };
+
 
 
 // export const sendFeedback = async (req, res) => {

@@ -17,9 +17,13 @@ const usersModel = new Schema(
         },
         Password:{
             type:String,
-            required:true,
-            trim:true,
-
+            default:null,
+        },
+        GoogleId:{
+            type:String,
+            sparse:true,
+            unique:true,
+            default:null
         }
 
     },
