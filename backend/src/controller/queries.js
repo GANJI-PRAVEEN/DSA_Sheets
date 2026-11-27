@@ -12,6 +12,7 @@ import sheetsModel from "../models/sheets.model.js";
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import jwt from 'jsonwebtoken';
+import {OAuth2Client} from 'google-auth-library';
 dotenv.config();
 
 
@@ -44,6 +45,10 @@ dotenv.config();
 
 //   return transporter;
 // };
+
+const googleClient = new OAuth2Client(
+  process.env.GOOGLE_CLIENT_ID
+);
 export const welcome = async (req, res) => {
   try {
     return res.status(200).json({
@@ -278,6 +283,106 @@ export const userLoginCheck = async (req, res) => {
       error: error.message,
     });
   }
+};
+
+
+export const googleLogin = async (req, res) => {
+    try {
+        const { credential } = req.body;
+
+        if (!credential) {
+            return res.status(400).json({
+                success: false,
+                message: "Google credential is required"
+            });
+        }
+
+        // 1. Verify Google's ID token
+        const ticket = await googleClient.verifyIdToken({
+            idToken: credential,
+            audience: process.env.GOOGLE_CLIENT_ID
+        });
+
+        // 2. Extract verified user information
+        const payload = ticket.getPayload();
+
+        const {
+            sub: googleId,
+            name,
+            email,
+            email_verified
+        } = payload;
+
+        if (!email || !email_verified || !googleId) {
+            return res.status(401).json({
+                success: false,
+                message: "Google account verification failed"
+            });
+        }
+
+        const normalizedEmail = email.trim().toLowerCase();
+
+        // 3. Check whether user already exists using Google ID
+        let user = await usersModel.findOne({
+            GoogleId: googleId
+        });
+
+        // 4. If not found, check using email
+        if (!user) {
+            user = await usersModel.findOne({
+                Email: normalizedEmail
+            });
+
+            if (user) {
+                // Link Google account to existing email account
+                if (user.GoogleId && user.GoogleId !== googleId) {
+                    return res.status(409).json({
+                        success: false,
+                        message: "This email is linked to another Google account"
+                    });
+                }
+
+                user.GoogleId = googleId;
+                await user.save();
+            } else {
+                // 5. Create a new Google user
+                user = await usersModel.create({
+                    Name: name || normalizedEmail.split("@")[0],
+                    Email: normalizedEmail,
+                    Password: null,
+                    GoogleId: googleId
+                });
+            }
+        }
+
+        // 6. Generate JWT (same authentication architecture)
+        const token = jwt.sign(
+            { userId: user._id },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        );
+
+        // 7. Return authenticated user
+        return res.status(200).json({
+            success: true,
+            message: "Google login successful",
+            user: {
+                _id: user._id,
+                Name: user.Name,
+                Email: user.Email
+            },
+            token
+        });
+
+    } catch (error) {
+        console.error("Google login failed:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Google authentication failed",
+            error: error.message
+        });
+    }
 };
 
 export const AddTopics = async (req, res) => {

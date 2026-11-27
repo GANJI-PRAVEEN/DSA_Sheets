@@ -1,5 +1,6 @@
 import {Router} from "express"
-import { welcome ,createUser,userLoginCheck, getProfile,retrieveTopics,AssignProblemSolved ,
+import { 
+  welcome ,createUser,userLoginCheck,googleLogin, getProfile,retrieveTopics,AssignProblemSolved ,
     
     retrieveUserProgress,
     retrieveTopicWiseSolvedProblems,
@@ -28,6 +29,7 @@ router.route('/').get(welcome);
 router.route('/create-user').post(createUser);
 router.route('/fetch-sheets').get(fetchSheets);
 router.route('/user-login').post(userLoginCheck);
+router.route("/google-login").post(googleLogin);
 router.route('/profile').get(authMiddleware,getProfile);
 router.route('/retrieveTopics').post(retrieveTopics);
 router.route('/assignProblemSolved').post(authMiddleware,AssignProblemSolved);
