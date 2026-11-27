@@ -42,6 +42,39 @@ export const userLoginAPI = async ({ email, password }) => {
   return await res.json();
 };
 
+// Google Login - Public API
+export const googleLoginAPI = async ({ credential }) => {
+  if (!baseUrl) {
+    throw new Error("API base URL is not configured.");
+  }
+
+  const res = await fetch(`${baseUrl}/api/dsa-sheets/google-login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ credential }),
+  });
+
+  let data = null;
+  try {
+    data = await res.json();
+  } catch {
+    data = null;
+  }
+
+  if (!res.ok) {
+    return {
+      success: false,
+      status: res.status,
+      message: data?.message || `Google login failed (HTTP ${res.status}).`,
+      ...(data || {}),
+    };
+  }
+
+  return data || { success: false, message: "Invalid server response." };
+};
+
 // Retrieve topics - Public API
 export const retrieveTopicsAPI = async ({ sheetId }) => {
   const res = await fetch(`${baseUrl}/api/dsa-sheets/retrieveTopics`, {

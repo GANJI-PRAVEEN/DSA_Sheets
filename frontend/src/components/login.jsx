@@ -1,17 +1,41 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Background from '../Background';
-import {userLoginAPI} from '../../api/calls.js'
-import {toast} from 'react-toastify';
+import { googleLoginAPI, userLoginAPI } from '../../api/calls.js';
+import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import ThemeToggleButton from './ThemeToggleButton';
+import { useTheme } from '../context/ThemeContext';
+
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID?.trim() || '';
+
+const getGoogleErrorMessage = (response) => {
+  const rawDetails = `${response?.message || ''} ${response?.error || ''}`.toLowerCase();
+
+  if (
+    rawDetails.includes('token used too late') ||
+    rawDetails.includes('wrong number of segments') ||
+    rawDetails.includes('invalid token') ||
+    rawDetails.includes('pem') ||
+    rawDetails.includes('malformed') ||
+    rawDetails.includes('expired')
+  ) {
+    return 'Your Google sign-in token is invalid or expired. Please try again.';
+  }
+
+  return response?.message || 'Google authentication failed. Please try again.';
+};
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-  const [loading,setLoading] = useState(false);
-  const [userData,setUserData] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [googleError, setGoogleError] = useState('');
+  const googleAuthInFlightRef = useRef(false);
+  const { theme } = useTheme();
 
   const validateForm = () => {
     const newErrors = {};
@@ -33,61 +57,114 @@ const LoginPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  if (!validateForm()) return;
-
-  setLoading(true);
-
-  try {
-    console.log("Login attempt:", { email });
-
-    const login = await userLoginAPI({ email, password });
-
-    if (login.success) {
-
-      // Store JWT token
-      if (!login.token) {
-        toast.error("Login successful, but authentication token is missing.");
-        return;
-      }
-
-      localStorage.setItem("token", login.token);
-      console.log("token generated ",login.token);
-
-      // Store existing user details
-      const loggedInUserData = login.user;
-
-      setUserData(loggedInUserData);
-
-      const user = {
-        _id: loggedInUserData._id,
-        email: loggedInUserData.Email,
-        name: loggedInUserData.Name,
-      };
-
-      localStorage.setItem("user", JSON.stringify(user));
-
-      toast.success(login.message);
-
-      console.log("LoggedInUserID", loggedInUserData._id);
-      console.log("Logged in user", user);
-
-      navigate("/");
-    } else {
-      toast.error(login.message);
+  const completeAuthSession = (authResponse, fallbackSuccessMessage) => {
+    if (!authResponse?.token) {
+      const missingTokenMsg = 'Login successful, but authentication token is missing.';
+      toast.error(missingTokenMsg);
+      return false;
     }
 
-  } catch (error) {
-    console.error("Login error:", error);
-    toast.error("Unable to connect to the server. Please try again.");
-  } finally {
-    setLoading(false);
-  }
-};
+    const loggedInUserData = authResponse.user;
+    if (!loggedInUserData?._id || !loggedInUserData?.Email) {
+      const missingUserMsg = 'Login successful, but user information is missing.';
+      toast.error(missingUserMsg);
+      return false;
+    }
 
+    localStorage.setItem('token', authResponse.token);
+
+    const user = {
+      _id: loggedInUserData._id,
+      email: loggedInUserData.Email,
+      name: loggedInUserData.Name,
+    };
+
+    localStorage.setItem('user', JSON.stringify(user));
+    toast.success(authResponse.message || fallbackSuccessMessage);
+    navigate('/');
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (loading || googleLoading) return;
+    if (!validateForm()) return;
+
+    setGoogleError('');
+    setLoading(true);
+
+    try {
+      const login = await userLoginAPI({ email, password });
+
+      if (login.success) {
+        completeAuthSession(login, 'Logged In successfully');
+      } else {
+        toast.error(login.message);
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error('Unable to connect to the server. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    if (googleAuthInFlightRef.current || loading || googleLoading) {
+      return;
+    }
+
+    if (!googleClientId) {
+      const msg = 'Google Sign-In is not configured (missing Google Client ID).';
+      setGoogleError(msg);
+      toast.error(msg);
+      return;
+    }
+
+    const credential = credentialResponse?.credential;
+    if (!credential) {
+      const msg = 'Google Sign-In did not return a credential. Please try again.';
+      setGoogleError(msg);
+      toast.error(msg);
+      return;
+    }
+
+    googleAuthInFlightRef.current = true;
+    setGoogleError('');
+    setGoogleLoading(true);
+
+    try {
+      const res = await googleLoginAPI({ credential });
+
+      if (res?.success) {
+        const completed = completeAuthSession(res, 'Google login successful');
+        if (!completed) {
+          setGoogleError('Google login succeeded, but session data was incomplete.');
+        }
+      } else {
+        const errorMessage = getGoogleErrorMessage(res);
+        setGoogleError(errorMessage);
+        toast.error(errorMessage);
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+      const networkErrorMsg = 'Unable to connect to the server. Please try again.';
+      setGoogleError(networkErrorMsg);
+      toast.error(networkErrorMsg);
+    } finally {
+      googleAuthInFlightRef.current = false;
+      setGoogleLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    const msg = 'Google Sign-In was cancelled or failed. Please try again.';
+    setGoogleError(msg);
+    toast.error(msg);
+  };
+
+  const isAuthBusy = loading || googleLoading;
 
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-[var(--theme-background)] text-[var(--theme-text)]">
@@ -112,6 +189,7 @@ const handleSubmit = async (e) => {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={isAuthBusy}
                 className={`theme-input rounded-lg px-4 py-3 transition-all duration-200 ${errors.email ? 'border-red-500' : ''}`}
                 placeholder="Enter your email"
               />
@@ -129,6 +207,7 @@ const handleSubmit = async (e) => {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isAuthBusy}
                 className={`theme-input rounded-lg px-4 py-3 transition-all duration-200 ${errors.password ? 'border-red-500' : ''}`}
                 placeholder="Enter your password"
               />
@@ -139,11 +218,65 @@ const handleSubmit = async (e) => {
 
             <button
               type="submit"
-              className="theme-button-primary w-full rounded-lg py-3 px-4 font-medium transition-all duration-200"
+              disabled={isAuthBusy}
+              className="theme-button-primary w-full rounded-lg py-3 px-4 font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {loading? 'Please Wait...':'Login'}
+              {loading ? 'Please Wait...' : 'Login'}
             </button>
           </form>
+
+          <div className="my-6 flex items-center gap-3">
+            <div className="h-px flex-1 bg-[var(--theme-border)]" />
+            <span className="text-xs font-medium uppercase tracking-wider text-[var(--theme-muted)]">
+              or
+            </span>
+            <div className="h-px flex-1 bg-[var(--theme-border)]" />
+          </div>
+
+          <div className="space-y-3">
+            {!googleClientId ? (
+              <div
+                role="alert"
+                className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-center text-sm text-amber-500"
+              >
+                Google Sign-In is unavailable: Google Client ID is not configured.
+              </div>
+            ) : (
+              <div className="relative flex w-full flex-col items-center">
+                <div
+                  className={`flex w-full justify-center transition-opacity duration-200 ${
+                    isAuthBusy ? 'pointer-events-none opacity-60' : ''
+                  }`}
+                >
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={handleGoogleError}
+                    theme={theme === 'dark' ? 'filled_black' : 'outline'}
+                    size="large"
+                    text="signin_with"
+                    shape="rectangular"
+                    logo_alignment="left"
+                  />
+                </div>
+
+                {googleLoading && (
+                  <div className="mt-3 flex items-center justify-center gap-2 text-sm text-[var(--theme-muted)]">
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-[var(--theme-border)] border-t-[var(--theme-accent)]" />
+                    <span>Signing in with Google...</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {googleError && (
+              <p
+                role="alert"
+                className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-center text-sm text-red-500"
+              >
+                {googleError}
+              </p>
+            )}
+          </div>
 
           <div className="mt-6 text-center">
             <p className="text-[var(--theme-muted)]">

@@ -8,6 +8,9 @@ import TopicsViewPage from './components/topicsViewPage.jsx';
 import ProblemsViewPage from './components/problemsViewPage.jsx';
 import ReachOutPage from './components/ReachOutPage.jsx';
 import { ThemeProvider, useTheme } from './context/ThemeContext.jsx';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID?.trim() || '';
 
 const AppRoutes = () => {
   const { theme } = useTheme();
@@ -29,9 +32,11 @@ const AppRoutes = () => {
 
 function App() {
   return (
-    <ThemeProvider>
-      <AppRoutes />
-    </ThemeProvider>
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <ThemeProvider>
+        <AppRoutes />
+      </ThemeProvider>
+    </GoogleOAuthProvider>
   )
 }
 
